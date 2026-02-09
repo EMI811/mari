@@ -103,7 +103,7 @@ function renderNotes() {
 
 window.onload = () => { loadProfile(); renderGallery(); renderNotes(); };
 // CONTROL DE VERSIONES Y GUÍA
-const currentVersion = "1.0.1"; // Si cambias esto a "1.0.2", la guía volverá a salir
+const currentVersion = "1.0.2"; // Si cambias esto a "1.0.2", la guía volverá a salir
 
 function checkFirstTime() {
     const savedVersion = localStorage.getItem('app_version');

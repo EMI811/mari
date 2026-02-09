@@ -94,4 +94,14 @@ input:checked + .slider:before { transform: translateX(20px); }
 .btn-got-it {
     background: var(--ios-blue); color: white; border: none; width: 100%;
     padding: 15px; border-radius: 15px; font-weight: bold; margin-top: 20px; font-size: 16px;
-}
+}/* CHAT */
+.chat-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.msg { padding: 10px 15px; border-radius: 18px; max-width: 70%; font-size: 15px; }
+.msg.sent { background: var(--ios-blue); color: white; align-self: flex-end; }
+.msg.received { background: #e9e9eb; color: black; align-self: flex-start; }
+
+.chat-input-area { padding: 10px; background: white; display: flex; gap: 10px; border-top: 0.5px solid #ccc; }
+.chat-input-area input { flex: 1; border: 1px solid #ccc; padding: 10px; border-radius: 20px; outline: none; }
+
+/* WALLPAPERS */
+.wp-option { aspect-ratio: 1/1; border-radius: 15px; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer; }

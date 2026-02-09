@@ -163,4 +163,39 @@ window.onload = () => {
     if(localStorage.getItem('app_version') !== versionInstalada) {
         document.getElementById('setup-guide').classList.remove('hidden');
     }
-};
+};// --- SISTEMA DE CHAT ---
+function sendMsg() {
+    const input = document.getElementById('chat-input');
+    if(!input.value) return;
+    
+    db.ref('messages').push({
+        text: input.value,
+        sender: localStorage.getItem('user_name') || "Amor",
+        time: Date.now()
+    });
+    input.value = "";
+}
+
+db.ref('messages').limitToLast(20).on('value', (snapshot) => {
+    const container = document.getElementById('chat-container');
+    container.innerHTML = "";
+    snapshot.forEach(child => {
+        const m = child.val();
+        const isMe = m.sender === localStorage.getItem('user_name');
+        container.innerHTML += `<div class="msg ${isMe ? 'sent' : 'received'}">${m.text}</div>`;
+    });
+    container.scrollTop = container.scrollHeight;
+});
+
+// --- SISTEMA DE WALLPAPER ---
+function setWP(color) {
+    document.body.style.background = color;
+    localStorage.setItem('user_wp', color);
+    showBanner("Diseño", "Fondo actualizado ✨");
+}
+
+// Cargar wallpaper al iniciar
+window.addEventListener('load', () => {
+    const savedWP = localStorage.getItem('user_wp');
+    if(savedWP) document.body.style.background = savedWP;
+});

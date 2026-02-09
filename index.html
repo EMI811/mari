@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Notas</title>
+    <title>Nuestra App</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="style.css">
@@ -16,42 +16,45 @@
         <button id="btn-settings" class="btn-apple">Ajustes</button>
     </header>
 
-    <main id="main-menu" class="view">
-        <h1 class="main-title">Notas</h1>
+    <main id="main-menu" class="view active">
+        <h1 class="main-title">Nuestra App ❤️</h1>
         <div class="app-grid">
-            <div class="ios-card" id="btn-notes">
+            <div class="ios-card" onclick="openView('view-notes')">
                 <span class="icon">📝</span>
-                <span class="label">Mis Notas</span>
+                <span class="label">Notas</span>
             </div>
-            <div class="ios-card" id="btn-cloud">
-                <span class="icon">☁️</span>
-                <span class="label">Nube</span>
+            <div class="ios-card" onclick="openView('view-cloud')">
+                <span class="icon">📸</span>
+                <span class="label">Galería</span>
             </div>
         </div>
     </main>
 
-    <section id="notes-view" class="view hidden">
+    <section id="view-notes" class="view">
         <div class="notes-container">
-            <div class="notes-sidebar-line"></div>
-            <textarea id="notes-editor" class="notes-textarea" placeholder="Escribe una nota..."></textarea>
+            <div class="notes-line"></div>
+            <textarea id="notes-editor" placeholder="Escribe algo aquí..."></textarea>
         </div>
+    </section>
+
+    <section id="view-cloud" class="view">
+        <div class="gallery-header">
+            <h2>Nuestros Momentos</h2>
+            <label for="upload-photo" class="btn-upload">Añadir Foto +</label>
+            <input type="file" id="upload-photo" accept="image/*" hidden>
+        </div>
+        <div id="gallery-grid" class="gallery-grid">
+            </div>
     </section>
 
     <div id="modal-settings" class="modal hidden">
         <div class="modal-content">
-            <h2>Ajustes</h2>
-            <div class="setting-item">
+            <h3>Configuración</h3>
+            <div class="setting-row">
                 <span>Modo Oscuro</span>
-                <input type="checkbox" id="dark-mode-toggle">
+                <input type="checkbox" id="dark-toggle">
             </div>
-            <div class="setting-item" onclick="changeTheme()">
-                <span>Cambiar Color Fondo</span>
-                <span class="arrow">›</span>
-            </div>
-            <div class="setting-item" onclick="clearNotes()" style="color: #ff3b30;">
-                <span>Borrar Todo</span>
-            </div>
-            <button onclick="closeSettings()" class="btn-close">Listo</button>
+            <button onclick="closeSettings()" class="btn-close">Cerrar</button>
         </div>
     </div>
 

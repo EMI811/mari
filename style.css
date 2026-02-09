@@ -1,27 +1,17 @@
 :root {
     --ios-blue: #007AFF;
-    --ios-yellow: #ffcc00;
-    --bg-gradient: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+    --notes-bg: #fdfcf5;
 }
 
 body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg-gradient);
+    font-family: -apple-system, system-ui, sans-serif;
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
     height: 100vh;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition: background 0.3s;
+    overflow: hidden;
 }
-
-/* MODO OSCURO */
-body.dark {
-    background: #000;
-    color: white;
-}
-body.dark .ios-card { background: rgba(50, 50, 50, 0.8); color: white; }
-body.dark .notes-textarea { background: #1c1c1e; color: white; }
 
 .navbar {
     padding: 60px 20px 10px;
@@ -31,13 +21,7 @@ body.dark .notes-textarea { background: #1c1c1e; color: white; }
     -webkit-backdrop-filter: blur(20px);
 }
 
-.btn-apple {
-    background: none;
-    border: none;
-    color: var(--ios-blue);
-    font-size: 17px;
-    cursor: pointer;
-}
+.btn-apple { background: none; border: none; color: var(--ios-blue); font-size: 17px; cursor: pointer; }
 
 .main-title { padding: 10px 25px; font-size: 34px; font-weight: 800; }
 
@@ -45,75 +29,44 @@ body.dark .notes-textarea { background: #1c1c1e; color: white; }
 
 .ios-card {
     background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border-radius: 20px;
+    border-radius: 25px;
     aspect-ratio: 1/1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    backdrop-filter: blur(10px);
     box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-    border: 0.5px solid rgba(255,255,255,0.2);
 }
 
-/* ESTILO NOTAS REALISTA */
-.notes-container {
-    flex: 1;
-    display: flex;
-    background: #fdfcf5;
+/* VISTAS */
+.view { display: none; flex: 1; flex-direction: column; overflow-y: auto; }
+.active { display: flex; }
+
+/* ESTILO NOTAS */
+.notes-container { display: flex; flex: 1; background: var(--notes-bg); }
+.notes-line { width: 2px; background: rgba(255, 204, 0, 0.3); margin-left: 40px; }
+#notes-editor {
+    flex: 1; border: none; outline: none; background: transparent;
+    padding: 20px; font-size: 18px; line-height: 1.5; resize: none;
 }
 
-.notes-sidebar-line {
-    width: 2px;
-    background: rgba(255, 204, 0, 0.3); /* Línea amarilla tenue de Notas iOS */
-    margin-left: 45px;
+/* GALERÍA */
+.gallery-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+.btn-upload { background: var(--ios-blue); color: white; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: 600; }
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    padding: 2px;
 }
-
-.notes-textarea {
-    flex: 1;
-    border: none;
-    outline: none;
-    background: transparent;
-    padding: 20px 20px 20px 10px;
-    font-size: 18px;
-    line-height: 1.5;
-    font-family: inherit;
-    resize: none;
-}
-
-/* MODAL AJUSTES */
-.modal {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-}
-
-.modal-content {
-    background: white;
-    width: 80%;
-    border-radius: 20px;
-    padding: 20px;
-    color: black;
-}
-
-.setting-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 15px 0;
-    border-bottom: 0.5px solid #eee;
-}
-
-.btn-close {
+.gallery-item {
     width: 100%;
-    margin-top: 20px;
-    background: var(--ios-blue);
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 10px;
+    aspect-ratio: 1/1;
+    object-fit: cover;
 }
+
+/* MODAL */
+.modal { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index:100; }
+.modal-content { background:white; width:80%; border-radius:20px; padding:20px; }
+.hidden { display: none !important; }

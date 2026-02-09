@@ -1,48 +1,58 @@
-// Elementos
-const btnNotes = document.getElementById('btn-notes');
 const btnBack = document.getElementById('btn-back');
-const btnSettings = document.getElementById('btn-settings');
-const modalSettings = document.getElementById('modal-settings');
-const notesView = document.getElementById('notes-view');
-const mainMenu = document.getElementById('main-menu');
+const uploadPhoto = document.getElementById('upload-photo');
+const galleryGrid = document.getElementById('gallery-grid');
 const notesEditor = document.getElementById('notes-editor');
-const darkModeToggle = document.getElementById('dark-mode-toggle');
 
-// Navegación
-btnNotes.addEventListener('click', () => {
-    mainMenu.classList.add('hidden');
-    notesView.classList.remove('hidden');
+// Navegación entre pantallas
+function openView(viewId) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(viewId).classList.add('active');
     btnBack.style.visibility = 'visible';
-});
-
-btnBack.addEventListener('click', () => {
-    mainMenu.classList.remove('hidden');
-    notesView.classList.add('hidden');
-    btnBack.style.visibility = 'hidden';
-});
-
-// Ajustes
-btnSettings.addEventListener('click', () => modalSettings.classList.remove('hidden'));
-function closeSettings() { modalSettings.classList.add('hidden'); }
-
-// Función Borrar
-function clearNotes() {
-    if(confirm("¿Seguro que quieres borrar todas las notas?")) {
-        notesEditor.value = "";
-        localStorage.removeItem('nota_amor');
-    }
 }
 
-// Modo Oscuro
-darkModeToggle.addEventListener('change', () => {
-    document.body.classList.toggle('dark');
-});
+function goHome() {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('main-menu').classList.add('active');
+    btnBack.style.visibility = 'hidden';
+}
 
-// Guardado Automático
-window.onload = () => {
-    notesEditor.value = localStorage.getItem('nota_amor') || "";
+btnBack.addEventListener('click', goHome);
+
+// Ajustes
+document.getElementById('btn-settings').onclick = () => document.getElementById('modal-settings').classList.remove('hidden');
+function closeSettings() { document.getElementById('modal-settings').classList.add('hidden'); }
+
+// Lógica de Notas
+notesEditor.oninput = () => localStorage.setItem('nuestra_nota', notesEditor.value);
+
+// Lógica de Galería (Guardar fotos en el dispositivo)
+uploadPhoto.onchange = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        const imgUrl = event.target.result;
+        savePhoto(imgUrl);
+        displayPhoto(imgUrl);
+    };
+    reader.readAsDataURL(file);
 };
 
-notesEditor.addEventListener('input', () => {
-    localStorage.setItem('nota_amor', notesEditor.value);
-});
+function displayPhoto(url) {
+    const img = document.createElement('img');
+    img.src = url;
+    img.className = 'gallery-item';
+    galleryGrid.prepend(img);
+}
+
+function savePhoto(url) {
+    let photos = JSON.parse(localStorage.getItem('nuestras_fotos') || "[]");
+    photos.push(url);
+    localStorage.setItem('nuestras_fotos', JSON.stringify(photos));
+}
+
+// Cargar todo al iniciar
+window.onload = () => {
+    notesEditor.value = localStorage.getItem('nuestra_nota') || "";
+    let photos = JSON.parse(localStorage.getItem('nuestras_fotos') || "[]");
+    photos.forEach(displayPhoto);
+};

@@ -1,0 +1,86 @@
+:root {
+    --ios-yellow: #ffcc00;
+    --notes-bg: #fdfcf5;
+    --glass: rgba(255, 255, 255, 0.7);
+}
+
+/* Fondo general con degradado suave */
+body {
+    margin: 0;
+    font-family: -apple-system, system-ui, sans-serif;
+    background: #e5e5ea;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Interfaz de Notas */
+#notes-view {
+    background-color: var(--notes-bg);
+    height: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.notes-editor {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    resize: none;
+    color: #333;
+    font-family: inherit;
+}
+
+/* Cabecera estilo iOS */
+.navbar {
+    padding: 45px 15px 10px;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 0.5px solid rgba(0,0,0,0.1);
+}
+
+.btn-apple {
+    color: #007AFF;
+    background: none;
+    border: none;
+    font-size: 17px;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.btn-done {
+    font-weight: 600;
+}
+
+/* Tarjetas del Menú Principal */
+.app-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    padding: 20px;
+}
+
+.ios-card {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.ios-card .icon {
+    display: block;
+    font-size: 40px;
+    margin-bottom: 8px;
+}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Para Mi Niña</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Mi Amor">
+
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+
+<header class="navbar">
+    <button id="btn-back" class="btn-apple" onclick="goHome()" style="display:none;">‹ Carpetas</button>
+    <div class="spacer"></div>
+    <button class="btn-apple btn-done" onclick="goHome()">Listo</button>
+</header>
+<main id="main-menu">
+    <h1 style="padding: 20px 20px 0;">Para Ti ❤️</h1>
+    <div class="app-grid">
+        <button class="ios-card" onclick="openView('notes-view')">
+            <span class="icon">📝</span> Notas
+        </button>
+        <button class="ios-card" onclick="openView('cloud-view')">
+            <span class="icon">☁️</span> Nube
+        </button>
+    </div>
+</main>
+
+<section id="notes-view" style="display:none;">
+    <textarea class="notes-editor" placeholder="Empieza a escribir..."></textarea>
+</section>
+
+<section id="cloud-view" style="display:none;">
+    <div style="text-align:center; margin-top:50px;">
+        <span style="font-size:50px;">☁️</span>
+        <p>Tu nube privada está lista.</p>
+    </div>
+</section>
+</html>

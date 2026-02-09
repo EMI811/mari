@@ -135,4 +135,51 @@ window.onload = () => {
     setInterval(actualizarContador, 60000);
     document.getElementById('prof-name').innerText = localStorage.getItem('user_name') || "Tu Nombre";
     if(localStorage.getItem('user_wp')) document.body.style.background = localStorage.getItem('user_wp');
-};
+};// --- SISTEMA DE LOCALIZACIÓN ---
+function compartirUbicacion() {
+    if (!navigator.geolocation) {
+        alert("Tu cel no deja compartir ubicación");
+        return;
+    }
+
+    showBanner("Satélite", "Obteniendo coordenadas...");
+
+    navigator.geolocation.getCurrentPosition((pos) => {
+        const coords = {
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+            user: localStorage.getItem('user_name') || "Amor",
+            timestamp: Date.now()
+        };
+
+        // Guardamos en Firebase
+        db.ref('last_location/' + coords.user).set(coords);
+        showBanner("📍", "Ubicación enviada!");
+    }, (err) => {
+        alert("Error al obtener ubicación. Activa el GPS.");
+    });
+}
+
+// Escuchar cambios de ubicación
+db.ref('last_location').on('value', (snapshot) => {
+    const data = snapshot.val();
+    if(!data) return;
+
+    // Buscamos la ubicación de la OTRA persona
+    const miNombre = localStorage.getItem('user_name');
+    let otraPersona = "";
+    
+    // Identificar quién es el otro
+    Object.keys(data).forEach(nombre => {
+        if(nombre !== miNombre) otraPersona = data[nombre];
+    });
+
+    if(otraPersona) {
+        document.getElementById('distancia-texto').innerText = `Última vez de ${otraPersona.user} cerca de aquí.`;
+        const link = `https://www.google.com/maps?q=${otraPersona.lat},${otraPersona.lng}`;
+        const btnLink = document.getElementById('link-google-maps');
+        btnLink.href = link;
+        btnLink.style.display = "block";
+        document.getElementById('mini-mapa').innerText = "📍";
+    }
+});

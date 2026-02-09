@@ -1,4 +1,4 @@
-// --- CONFIGURACIÓN FIREBASE (RELLENA CON TUS DATOS) ---
+// --- CONFIGURACIÓN FIREBASE ---
 const firebaseConfig = {
     apiKey: "AIzaSyCRjtVHymOKWp_n13G4xkYpr8_pUTHaMgc",
     authDomain: "nuestraapp-97318.firebaseapp.com",
@@ -11,7 +11,10 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const currentVersion = "1.0.1";
+
+// --- SISTEMA DE VERSIONES ---
+// Cada vez que subas algo a GitHub, sube este número (ej: "1.0.3")
+const versionInstalada = "1.0.2"; 
 
 // --- NAVEGACIÓN ---
 function openView(id) {
@@ -42,9 +45,23 @@ function showBanner(title, msg) {
 
 function testNotif() { showBanner("Prueba ✨", "Todo funciona perfecto amor."); }
 
+// --- ACTUALIZACIÓN REAL ---
 function updateSoftware() {
-    showBanner("Buscando...", "Verificando actualizaciones...");
-    setTimeout(() => showBanner("iOS Love", "Ya tienes la última versión."), 2000);
+    showBanner("Buscando...", "Verificando servidores de GitHub...");
+
+    setTimeout(() => {
+        // En el código que SUBAS a GitHub, cambia "nuevaVersion" para que sea mayor a "versionInstalada"
+        const nuevaVersionDisponible = "1.0.2"; 
+
+        if (nuevaVersionDisponible !== versionInstalada) {
+            const confirmar = confirm("¡Nueva actualización disponible (v" + nuevaVersionDisponible + ")! ¿Quieres instalarla?");
+            if (confirmar) {
+                window.location.reload(true); // Recarga y limpia caché
+            }
+        } else {
+            showBanner("iOS Love", "El software está al día (v" + versionInstalada + ")");
+        }
+    }, 2000);
 }
 
 // --- PERFIL ---
@@ -118,34 +135,32 @@ db.ref('shared_photos').on('value', (snapshot) => {
     });
 });
 
-// --- GUIA Y CARGA ---
-function closeGuide() {
-    document.getElementById('setup-guide').classList.add('hidden');
-    localStorage.setItem('app_version', currentVersion);
-}
-
-window.onload = () => {
-    loadProfile();
-    if(localStorage.getItem('app_version') !== currentVersion) {
-        document.getElementById('setup-guide').classList.remove('hidden');
-    }
-};
+// --- CONTADOR Y GUIA ---
 function actualizarContador() {
-    // CAMBIA ESTA FECHA: Año, Mes (0-11), Día
-    // Ejemplo: 2023, 0 (enero), 15
-    const fechaInicio = new Date(2025, 11, 21); 
+    const fechaInicio = new Date(2025, 11, 21); // 21 de Diciembre (Mes 11)
     const ahora = new Date();
-    
     const diff = ahora - fechaInicio;
     
     const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
     const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
-    document.getElementById('timer-display').innerText = `${dias} días, ${horas}h y ${minutos}m`;
+    const display = document.getElementById('timer-display');
+    if(display) display.innerText = `${dias} días, ${horas}h y ${minutos}m`;
 }
 
-// Actualizar cada minuto
-setInterval(actualizarContador, 60000);
-// Y llamar una vez al cargar
-actualizarContador();
+function closeGuide() {
+    document.getElementById('setup-guide').classList.add('hidden');
+    localStorage.setItem('app_version', versionInstalada);
+}
+
+// --- CARGA INICIAL ---
+window.onload = () => {
+    loadProfile();
+    actualizarContador();
+    setInterval(actualizarContador, 60000);
+    
+    if(localStorage.getItem('app_version') !== versionInstalada) {
+        document.getElementById('setup-guide').classList.remove('hidden');
+    }
+};

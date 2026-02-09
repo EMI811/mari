@@ -1,4 +1,3 @@
-// --- CONFIGURACIÓN FIREBASE ---
 const firebaseConfig = {
     apiKey: "AIzaSyCRjtVHymOKWp_n13G4xkYpr8_pUTHaMgc",
     authDomain: "nuestraapp-97318.firebaseapp.com",
@@ -11,10 +10,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-
-// --- SISTEMA DE VERSIONES ---
-// Cada vez que subas algo a GitHub, sube este número (ej: "1.0.3")
-const versionInstalada = "1.0.2"; 
+const versionInstalada = "1.0.2";
 
 // --- NAVEGACIÓN ---
 function openView(id) {
@@ -29,53 +25,38 @@ function goHome() {
     document.getElementById('view-home').classList.add('active');
     document.getElementById('btn-back').classList.add('hidden');
     document.getElementById('btn-settings-nav').classList.remove('hidden');
-    document.getElementById('notes-editor-area').classList.add('hidden');
-    document.getElementById('notes-list-area').classList.remove('hidden');
 }
 
-// --- NOTIFICACIONES ---
-function showBanner(title, msg) {
-    if(!document.getElementById('notif-check').checked) return;
-    const banner = document.getElementById('ios-notification');
-    document.getElementById('notif-title').innerText = title;
-    document.getElementById('notif-msg').innerText = msg;
-    banner.classList.add('notif-active');
-    setTimeout(() => banner.classList.remove('notif-active'), 3500);
+// --- CHAT ---
+function sendMsg() {
+    const input = document.getElementById('chat-input');
+    if(!input.value) return;
+    db.ref('messages').push({
+        text: input.value,
+        sender: localStorage.getItem('user_name') || "Amor",
+        time: Date.now()
+    });
+    input.value = "";
 }
 
-function testNotif() { showBanner("Prueba ✨", "Todo funciona perfecto amor."); }
+db.ref('messages').limitToLast(30).on('value', (snapshot) => {
+    const container = document.getElementById('chat-container');
+    container.innerHTML = "";
+    snapshot.forEach(child => {
+        const m = child.val();
+        const isMe = m.sender === localStorage.getItem('user_name');
+        const div = document.createElement('div');
+        div.className = `msg ${isMe ? 'sent' : 'received'}`;
+        div.innerText = m.text;
+        container.appendChild(div);
+    });
+    container.scrollTop = container.scrollHeight;
+});
 
-// --- ACTUALIZACIÓN REAL ---
-function updateSoftware() {
-    showBanner("Buscando...", "Verificando servidores de GitHub...");
-
-    setTimeout(() => {
-        // En el código que SUBAS a GitHub, cambia "nuevaVersion" para que sea mayor a "versionInstalada"
-        const nuevaVersionDisponible = "1.0.2"; 
-
-        if (nuevaVersionDisponible !== versionInstalada) {
-            const confirmar = confirm("¡Nueva actualización disponible (v" + nuevaVersionDisponible + ")! ¿Quieres instalarla?");
-            if (confirmar) {
-                window.location.reload(true); // Recarga y limpia caché
-            }
-        } else {
-            showBanner("iOS Love", "El software está al día (v" + versionInstalada + ")");
-        }
-    }, 2000);
-}
-
-// --- PERFIL ---
-function editProfile() {
-    const name = prompt("¿Cuál es tu nombre?", localStorage.getItem('user_name') || "");
-    const mail = prompt("¿Cuál es tu Gmail?", localStorage.getItem('user_mail') || "");
-    if(name) localStorage.setItem('user_name', name);
-    if(mail) localStorage.setItem('user_mail', mail);
-    loadProfile();
-}
-
-function loadProfile() {
-    document.getElementById('prof-name').innerText = localStorage.getItem('user_name') || "Tu Nombre";
-    document.getElementById('prof-mail').innerText = localStorage.getItem('user_mail') || "configurar@gmail.com";
+// --- WALLPAPER ---
+function setWP(color) {
+    document.body.style.background = color;
+    localStorage.setItem('user_wp', color);
 }
 
 // --- NOTAS ---
@@ -87,47 +68,38 @@ function showEditor() {
 function saveNote() {
     const text = document.getElementById('notes-editor').value;
     if(!text) return;
-    const newNote = {
+    db.ref('shared_notes').push({
         text: text,
-        author: localStorage.getItem('user_name') || "Alguien",
+        author: localStorage.getItem('user_name') || "Amor",
         date: new Date().toLocaleString()
-    };
-    db.ref('shared_notes').push(newNote);
+    });
     document.getElementById('notes-editor').value = "";
     goHome();
-    showBanner("Notas", "Guardado en la nube ❤️");
 }
 
 db.ref('shared_notes').on('value', (snapshot) => {
     const container = document.getElementById('list-container');
     container.innerHTML = "";
-    snapshot.forEach((child) => {
+    snapshot.forEach(child => {
         const n = child.val();
-        const div = document.createElement('div');
-        div.className = "settings-item";
-        div.style.flexDirection = "column";
-        div.style.alignItems = "flex-start";
-        div.innerHTML = `<b>${n.text}</b><small style="color:#8e8e93">${n.author} - ${n.date}</small>`;
-        container.prepend(div);
+        container.innerHTML += `<div class="settings-item" style="flex-direction:column; align-items:flex-start;">
+            <b>${n.text}</b><small style="color:gray">${n.author}</small>
+        </div>`;
     });
 });
 
 // --- FOTOS ---
 document.getElementById('up-file').onchange = (e) => {
     const file = e.target.files[0];
-    if(!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => {
-        db.ref('shared_photos').push(ev.target.result);
-        showBanner("Nube", "Foto enviada con éxito.");
-    };
+    reader.onload = (ev) => db.ref('shared_photos').push(ev.target.result);
     reader.readAsDataURL(file);
 };
 
 db.ref('shared_photos').on('value', (snapshot) => {
     const gallery = document.getElementById('gallery');
     gallery.innerHTML = "";
-    snapshot.forEach((child) => {
+    snapshot.forEach(child => {
         const img = document.createElement('img');
         img.src = child.val();
         img.className = "gallery-item";
@@ -135,67 +107,32 @@ db.ref('shared_photos').on('value', (snapshot) => {
     });
 });
 
-// --- CONTADOR Y GUIA ---
+// --- SISTEMA ---
 function actualizarContador() {
-    const fechaInicio = new Date(2025, 11, 21); // 21 de Diciembre (Mes 11)
-    const ahora = new Date();
-    const diff = ahora - fechaInicio;
-    
-    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-    const display = document.getElementById('timer-display');
-    if(display) display.innerText = `${dias} días, ${horas}h y ${minutos}m`;
+    const inicio = new Date(2025, 11, 21); // 21 Dic 2025
+    const diff = new Date() - inicio;
+    const dias = Math.floor(diff / (1000*60*60*24));
+    const horas = Math.floor((diff / (1000*60*60)) % 24);
+    document.getElementById('timer-display').innerText = `${dias} días y ${horas}h`;
 }
 
-function closeGuide() {
-    document.getElementById('setup-guide').classList.add('hidden');
-    localStorage.setItem('app_version', versionInstalada);
+function editProfile() {
+    const n = prompt("Tu nombre:");
+    if(n) {
+        localStorage.setItem('user_name', n);
+        document.getElementById('prof-name').innerText = n;
+    }
 }
 
-// --- CARGA INICIAL ---
+function updateSoftware() {
+    alert("Buscando actualizaciones... No hay versiones nuevas.");
+}
+
+function closeGuide() { document.getElementById('setup-guide').classList.add('hidden'); }
+
 window.onload = () => {
-    loadProfile();
     actualizarContador();
     setInterval(actualizarContador, 60000);
-    
-    if(localStorage.getItem('app_version') !== versionInstalada) {
-        document.getElementById('setup-guide').classList.remove('hidden');
-    }
-};// --- SISTEMA DE CHAT ---
-function sendMsg() {
-    const input = document.getElementById('chat-input');
-    if(!input.value) return;
-    
-    db.ref('messages').push({
-        text: input.value,
-        sender: localStorage.getItem('user_name') || "Amor",
-        time: Date.now()
-    });
-    input.value = "";
-}
-
-db.ref('messages').limitToLast(20).on('value', (snapshot) => {
-    const container = document.getElementById('chat-container');
-    container.innerHTML = "";
-    snapshot.forEach(child => {
-        const m = child.val();
-        const isMe = m.sender === localStorage.getItem('user_name');
-        container.innerHTML += `<div class="msg ${isMe ? 'sent' : 'received'}">${m.text}</div>`;
-    });
-    container.scrollTop = container.scrollHeight;
-});
-
-// --- SISTEMA DE WALLPAPER ---
-function setWP(color) {
-    document.body.style.background = color;
-    localStorage.setItem('user_wp', color);
-    showBanner("Diseño", "Fondo actualizado ✨");
-}
-
-// Cargar wallpaper al iniciar
-window.addEventListener('load', () => {
-    const savedWP = localStorage.getItem('user_wp');
-    if(savedWP) document.body.style.background = savedWP;
-});
+    document.getElementById('prof-name').innerText = localStorage.getItem('user_name') || "Tu Nombre";
+    if(localStorage.getItem('user_wp')) document.body.style.background = localStorage.getItem('user_wp');
+};

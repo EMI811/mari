@@ -26,14 +26,16 @@
 
     <main id="view-home" class="view active">
         <h1 class="main-title">Hola, Amor ❤️</h1>
-        <div class="settings-group" style="margin-top: 0;">
-    <div class="settings-item">
-        <div style="display:flex; flex-direction:column;">
-            <span style="font-size: 13px; color: var(--ios-blue); font-weight: bold; text-transform: uppercase;">Nuestro Tiempo</span>
-            <b id="timer-display" style="font-size: 18px;">Calculando amor...</b>
+        
+        <div class="settings-group" style="margin-top: 10px;">
+            <div class="settings-item">
+                <div style="display:flex; flex-direction:column;">
+                    <span style="font-size: 11px; color: var(--ios-blue); font-weight: bold; text-transform: uppercase;">Nuestro Tiempo</span>
+                    <b id="timer-display" style="font-size: 18px;">Calculando...</b>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
+
         <div class="app-grid">
             <div class="ios-card" onclick="openView('view-notes')">
                 <span class="icon">📝</span>
@@ -42,6 +44,14 @@
             <div class="ios-card" onclick="openView('view-cloud')">
                 <span class="icon">📸</span>
                 <span class="label">Nube</span>
+            </div>
+            <div class="ios-card" onclick="openView('view-messages')">
+                <span class="icon">💬</span>
+                <span class="label">Mensajes</span>
+            </div>
+            <div class="ios-card" onclick="openView('view-wallpaper')">
+                <span class="icon">🎨</span>
+                <span class="label">Fondo</span>
             </div>
         </div>
     </main>
@@ -52,14 +62,13 @@
             <div class="profile-img">👤</div>
             <div class="profile-info">
                 <b id="prof-name">Tu Nombre</b>
-                <span id="prof-mail">configurar@gmail.com</span>
+                <span id="prof-mail">Configurar perfil ›</span>
             </div>
-            <span class="arrow">›</span>
         </div>
         <div class="settings-group">
             <div class="settings-item" onclick="updateSoftware()">
                 <span>Actualización de software</span>
-                <span class="detail">1.0.1 <span class="arrow">›</span></span>
+                <span class="detail">1.0.2 <span class="arrow">›</span></span>
             </div>
         </div>
         <div class="settings-group">
@@ -99,47 +108,38 @@
         </div>
     </section>
 
+    <section id="view-messages" class="view">
+        <div class="section-header">
+            <h2>LoveChat</h2>
+        </div>
+        <div id="chat-container" class="chat-box"></div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Mensaje...">
+            <button class="btn-send" onclick="sendMsg()">↗️</button>
+        </div>
+    </section>
+
+    <section id="view-wallpaper" class="view">
+        <h1 class="main-title">Fondos</h1>
+        <div class="app-grid">
+            <div class="wp-option" style="background: #f2f2f7; border: 1px solid #ccc;" onclick="setWP('#f2f2f7')"></div>
+            <div class="wp-option" style="background: #ffdeeb;" onclick="setWP('#ffdeeb')"></div>
+            <div class="wp-option" style="background: #e1f5fe;" onclick="setWP('#e1f5fe')"></div>
+            <div class="wp-option" style="background: #1c1c1e;" onclick="setWP('#1c1c1e')"></div>
+        </div>
+    </section>
+
     <div id="setup-guide" class="modal-overlay hidden">
         <div class="guide-card">
-            <div class="guide-header">
-                <span>Instalación</span>
-                <button onclick="closeGuide()" class="btn-close-guide">✕</button>
-            </div>
+            <div class="guide-header"><span>Instalación</span><button onclick="closeGuide()">✕</button></div>
             <div class="guide-body">
                 <div class="guide-icon">📲</div>
                 <h3>Instala nuestra App</h3>
-                <ol>
-                    <li>Toca <b>Compartir</b> en Safari.</li>
-                    <li>Toca <b>"Agregar a inicio"</b>.</li>
-                </ol>
+                <p>Toca <b>Compartir</b> y luego <b>"Agregar a inicio"</b>.</p>
             </div>
             <button class="btn-got-it" onclick="closeGuide()">Entendido</button>
         </div>
     </div>
-    <section id="view-messages" class="view">
-    <div class="section-header">
-        <h2>LoveChat</h2>
-    </div>
-    <div id="chat-container" class="chat-box"></div>
-    <div class="chat-input-area">
-        <input type="text" id="chat-input" placeholder="Escribe un mensaje...">
-        <button onclick="sendMsg()">↗️</button>
-    </div>
-</section>
-
-<section id="view-wallpaper" class="view">
-    <h1 class="main-title">Fondo de Pantalla</h1>
-    <div class="app-grid">
-        <div class="wp-option" style="background: #f2f2f7;" onclick="setWP('#f2f2f7')"></div>
-        <div class="wp-option" style="background: #ffdeeb;" onclick="setWP('#ffdeeb')"></div>
-        <div class="wp-option" style="background: #e1f5fe;" onclick="setWP('#e1f5fe')"></div>
-        <div class="wp-option" style="background: #1c1c1e;" onclick="setWP('#1c1c1e')"></div>
-    </div>
-    <div class="ios-card" onclick="openView('view-messages')">
-    <span class="icon">💬</span>
-    <span class="label">Mensajes</span>
-</div>
-</section>
 
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>

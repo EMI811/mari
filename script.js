@@ -1,4 +1,21 @@
-// NAVEGACIÓN
+// Tus llaves maestras
+const firebaseConfig = {
+    apiKey: "TU_API_KEY",
+    authDomain: "TU_PROYECTO.firebaseapp.com",
+    databaseURL: "EL_LINK_DE_REALTIME_DATABASE", // El que copiaste en el paso 1
+    projectId: "TU_PROYECTO",
+    storageBucket: "TU_PROYECTO.appspot.com",
+    messagingSenderId: "NUMERO",
+    appId: "ID_DE_APP"
+};
+
+// Conectar con Google
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+console.log("¡Conexión establecida con la Nube! ☁️");
+
+// --- NAVEGACIÓN ---
 function openView(id) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById(id).classList.add('active');
@@ -11,13 +28,10 @@ function goHome() {
     document.getElementById('view-home').classList.add('active');
     document.getElementById('btn-back').classList.add('hidden');
     document.getElementById('btn-settings-nav').classList.remove('hidden');
-    document.getElementById('notes-editor-area').classList.add('hidden');
-    document.getElementById('notes-list-area').classList.remove('hidden');
 }
 
-// NOTIFICACIONES
+// --- NOTIFICACIONES ---
 function showBanner(title, msg) {
-    if(!document.getElementById('notif-check').checked) return;
     const banner = document.getElementById('ios-notification');
     document.getElementById('notif-title').innerText = title;
     document.getElementById('notif-msg').innerText = msg;
@@ -25,116 +39,66 @@ function showBanner(title, msg) {
     setTimeout(() => banner.classList.remove('notif-active'), 3500);
 }
 
-function testNotif() { showBanner("Prueba ❤️", "Notificaciones activas y funcionando."); }
+// --- NOTAS EN TIEMPO REAL (UTILIDAD REAL) ---
+function saveNote() {
+    const text = document.getElementById('notes-editor').value;
+    if(!text) return;
 
-function updateSoftware() {
-    showBanner("Buscando...", "Verificando actualizaciones de sistema.");
-    setTimeout(() => showBanner("Software al día", "iOS Love v1.0.1 está actualizado."), 2500);
+    const newNote = {
+        text: text,
+        author: localStorage.getItem('user_name') || "Alguien",
+        date: new Date().toLocaleString()
+    };
+
+    // Esto lo manda a la nube de Google
+    db.ref('shared_notes').push(newNote);
+    
+    document.getElementById('notes-editor').value = "";
+    goHome();
+    showBanner("Enviado", "Nota guardada en la nube ❤️");
 }
 
-// PERFIL
-function editProfile() {
-    const n = prompt("Nombre:");
-    const g = prompt("Gmail:");
-    if(n) localStorage.setItem('user_name', n);
-    if(g) localStorage.setItem('user_mail', g);
-    loadProfile();
-}
+// Escuchar notas nuevas
+db.ref('shared_notes').on('value', (snapshot) => {
+    const container = document.getElementById('list-container');
+    container.innerHTML = "";
+    snapshot.forEach((child) => {
+        const n = child.val();
+        const div = document.createElement('div');
+        div.className = "settings-item"; // Usamos tu clase de Ajustes para que se vea igual
+        div.style.flexDirection = "column";
+        div.style.alignItems = "flex-start";
+        div.innerHTML = `<b>${n.text}</b><small style="color:#8e8e93">${n.author} - ${n.date}</small>`;
+        container.prepend(div);
+    });
+});
 
-function loadProfile() {
-    document.getElementById('prof-name').innerText = localStorage.getItem('user_name') || "Tu Nombre";
-    document.getElementById('prof-mail').innerText = localStorage.getItem('user_mail') || "toque para configurar";
-}
-
-// FOTOS (NUBE LOCAL)
+// --- FOTOS EN TIEMPO REAL ---
 document.getElementById('up-file').onchange = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.onload = (ev) => {
-        let photos = JSON.parse(localStorage.getItem('saved_photos') || "[]");
-        photos.push(ev.target.result);
-        localStorage.setItem('saved_photos', JSON.stringify(photos));
-        renderGallery();
-        showBanner("Galería", "Foto añadida a tu nube.");
+        const base64 = ev.target.result;
+        // Guardamos en Firebase (Nube Real)
+        db.ref('shared_photos').push(base64);
+        showBanner("Nube", "Subiendo foto compartida...");
     };
     reader.readAsDataURL(file);
 };
 
-function renderGallery() {
+db.ref('shared_photos').on('value', (snapshot) => {
     const gallery = document.getElementById('gallery');
     gallery.innerHTML = "";
-    let photos = JSON.parse(localStorage.getItem('saved_photos') || "[]");
-    photos.reverse().forEach(src => {
+    snapshot.forEach((child) => {
         const img = document.createElement('img');
-        img.src = src; img.className = "gallery-item";
-        gallery.appendChild(img);
+        img.src = child.val();
+        img.className = "gallery-item";
+        gallery.prepend(img);
     });
-}
+});
 
-// NOTAS
-function showEditor() {
-    document.getElementById('notes-list-area').classList.add('hidden');
-    document.getElementById('notes-editor-area').classList.remove('hidden');
-}
-
-function saveNote() {
-    const text = document.getElementById('notes-editor').value;
-    if(!text) return;
-    let notes = JSON.parse(localStorage.getItem('saved_notes') || "[]");
-    notes.push({text, date: new Date().toLocaleDateString()});
-    localStorage.setItem('saved_notes', JSON.stringify(notes));
-    document.getElementById('notes-editor').value = "";
-    renderNotes();
-    goHome();
-    showBanner("Notas", "Se ha guardado tu nota.");
-}
-
-function renderNotes() {
-    const container = document.getElementById('list-container');
-    container.innerHTML = "";
-    let notes = JSON.parse(localStorage.getItem('saved_notes') || "[]");
-    notes.reverse().forEach(n => {
-        const div = document.createElement('div');
-        div.style.background = "white"; div.style.padding = "15px"; div.style.marginBottom = "10px"; div.style.borderRadius = "10px";
-        div.innerHTML = `<b>${n.text.substring(0,30)}...</b><br><small style="color:#888">${n.date}</small>`;
-        container.appendChild(div);
-    });
-}
-
-window.onload = () => { loadProfile(); renderGallery(); renderNotes(); };
-// CONTROL DE VERSIONES Y GUÍA
-const currentVersion = "1.0.2"; // Si cambias esto a "1.0.2", la guía volverá a salir
-
-function checkFirstTime() {
-    const savedVersion = localStorage.getItem('app_version');
-    // Si la versión guardada es diferente a la actual, mostramos la guía
-    if (savedVersion !== currentVersion) {
-        document.getElementById('setup-guide').classList.remove('hidden');
-    }
-}
-
-function closeGuide() {
-    document.getElementById('setup-guide').classList.add('hidden');
-    // Guardamos la versión actual para que no vuelva a salir
-    localStorage.setItem('app_version', currentVersion);
-    showBanner("Sistema", "Instrucciones guardadas.");
-}
-
-// VINCULAMOS A LA ACTUALIZACIÓN DE SOFTWARE
-function updateSoftware() {
-    showBanner("Buscando...", "Verificando actualizaciones.");
-    setTimeout(() => {
-        // Simulamos que encontramos una mejora
-        showBanner("¡Actualizado!", "Has recibido la versión " + currentVersion);
-        // Opcional: Podrías forzar que salga la guía de nuevo si quieres
-        // document.getElementById('setup-guide').classList.remove('hidden');
-    }, 2500);
-}
-
-// CARGA INICIAL (Agrega esto dentro de window.onload)
+// Perfil y carga inicial
 window.onload = () => {
-    loadProfile();
-    renderGallery();
-    renderNotes();
-    checkFirstTime(); // <--- Esta es la nueva función
+    document.getElementById('prof-name').innerText = localStorage.getItem('user_name') || "Configurar Perfil";
+    document.getElementById('prof-mail').innerText = localStorage.getItem('user_mail') || "toque para iniciar";
 };

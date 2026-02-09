@@ -11,10 +11,10 @@
 <body>
 
     <div id="ios-notification" class="notif-banner hidden">
-        <div class="notif-icon">❤️</div>
+        <div class="notif-icon">✨</div>
         <div class="notif-content">
-            <b id="notif-title">Aviso</b>
-            <p id="notif-msg">Mensaje</p>
+            <b id="notif-title">Actualización</b>
+            <p id="notif-msg">Nuevo contenido disponible</p>
         </div>
     </div>
 
@@ -41,9 +41,9 @@
             </div>
             <div class="page" id="page-2">
                 <div class="app-grid">
-                    <div class="ios-card">
-                        <span class="icon">🎵</span>
-                        <span class="label">Música</span>
+                    <div class="ios-card" onclick="checkForUpdates()">
+                        <span class="icon">🚀</span>
+                        <span class="label">Actualizar</span>
                     </div>
                 </div>
             </div>
@@ -54,21 +54,31 @@
         </div>
     </main>
 
+    <section id="view-cloud" class="view">
+        <div class="gallery-header">
+            <h2 style="color: var(--navy);">Nuestra Nube</h2>
+            <label for="upload-photo" class="btn-upload">Añadir Foto</label>
+            <input type="file" id="upload-photo" accept="image/*" style="display:none;">
+        </div>
+        <div id="gallery-grid" class="gallery-grid">
+            </div>
+    </section>
+
     <section id="view-settings" class="view">
         <h1 class="main-title">Ajustes</h1>
         <div class="settings-group">
             <div class="settings-item">
-                <span>Permitir Notificaciones</span>
+                <span>Notificaciones</span>
                 <label class="switch">
                     <input type="checkbox" id="notif-toggle" checked>
                     <span class="slider"></span>
                 </label>
             </div>
             <div class="settings-item" onclick="requestSystemPermissions()">
-                <span style="color: var(--ios-blue);">Otorgar permisos del sistema</span>
+                <span style="color: var(--ios-blue);">Permisos del sistema</span>
             </div>
             <div class="settings-item" onclick="sendTestNotif()">
-                <span>Prueba de Notificación</span>
+                <span>Probar Notificación</span>
                 <span class="arrow">›</span>
             </div>
         </div>
@@ -77,24 +87,15 @@
     <section id="view-notes" class="view">
         <div id="notes-list-view">
             <div class="gallery-header">
-                <h2>Mis Notas</h2>
-                <button class="btn-upload" onclick="createNewNote()">Nueva +</button>
+                <h2>Notas</h2>
+                <button class="btn-upload" onclick="createNewNote()">+</button>
             </div>
             <div id="notes-list" class="notes-list"></div>
         </div>
         <div id="note-editor-view" class="hidden">
-            <textarea id="notes-editor" placeholder="Escribir..."></textarea>
-            <button class="btn-floating-save" onclick="closeNoteEditor()">Listo</button>
+            <textarea id="notes-editor" placeholder="Escribe aquí..."></textarea>
+            <button class="btn-floating-save" onclick="closeNoteEditor()">Guardar</button>
         </div>
-    </section>
-
-    <section id="view-cloud" class="view">
-        <div class="gallery-header">
-            <h2>Galería</h2>
-            <label for="upload-photo" class="btn-upload">Subir</label>
-            <input type="file" id="upload-photo" accept="image/*" hidden>
-        </div>
-        <div id="gallery-grid" class="gallery-grid"></div>
     </section>
 
     <script src="script.js"></script>

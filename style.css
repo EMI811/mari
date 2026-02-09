@@ -1,32 +1,77 @@
 :root {
     --ios-blue: #007AFF;
-    --navy: #001f3f;
+    --ios-gray: #f2f2f7;
+    --ios-green: #34C759;
 }
 
-/* ... (Mantenemos el resto del CSS igual) ... */
-
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-    padding: 2px;
+body {
+    margin: 0; font-family: -apple-system, sans-serif;
+    background: var(--ios-gray); height: 100vh; overflow: hidden;
 }
 
-.gallery-item {
-    width: 100%;
-    aspect-ratio: 1/1;
-    object-fit: cover;
-    animation: zoomIn 0.3s ease;
+/* NAVBAR */
+.navbar {
+    padding: 60px 20px 10px; display: flex; justify-content: space-between;
+    background: rgba(242, 242, 247, 0.8); backdrop-filter: blur(20px); z-index: 100;
 }
+.btn-apple { background: none; border: none; color: var(--ios-blue); font-size: 17px; cursor: pointer; }
+.spacer { flex: 1; }
+.hidden { display: none !important; }
 
-@keyframes zoomIn {
-    from { transform: scale(0.8); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+/* NOTIFICACIÓN BANNER */
+.notif-banner {
+    position: fixed; top: 55px; left: 10px; right: 10px; z-index: 2000;
+    background: rgba(255,255,255,0.95); backdrop-filter: blur(20px);
+    border-radius: 20px; padding: 15px; display: flex; gap: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transform: translateY(-200%); transition: transform 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
 }
+.notif-active { transform: translateY(0); }
 
-.btn-floating-save {
-    position: fixed; bottom: 30px; right: 20px;
-    background: var(--ios-blue); color: white;
-    border: none; padding: 15px 30px; border-radius: 30px;
-    font-weight: bold; box-shadow: 0 5px 15px rgba(0,122,255,0.3);
+/* VISTAS */
+.view { display: none; flex: 1; overflow-y: auto; }
+.active { display: flex; flex-direction: column; }
+.main-title { padding: 10px 25px; font-size: 34px; font-weight: 800; margin: 0; }
+
+/* GRID PRINCIPAL */
+.app-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 25px; }
+.ios-card {
+    background: white; border-radius: 22px; aspect-ratio: 1/1;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
+.ios-card .icon { font-size: 45px; }
+.ios-card .label { font-weight: 600; font-size: 14px; margin-top: 10px; }
+
+/* AJUSTES & PERFIL */
+.profile-card {
+    background: white; margin: 15px; padding: 15px; border-radius: 12px;
+    display: flex; align-items: center; gap: 15px;
+}
+.profile-img { width: 60px; height: 60px; background: #001f3f; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; }
+.profile-info { flex: 1; }
+.profile-info b { display: block; font-size: 19px; }
+.profile-info span { font-size: 13px; color: #8e8e93; }
+
+.settings-group { background: white; margin: 20px 15px; border-radius: 12px; overflow: hidden; border: 0.5px solid #d1d1d6; }
+.settings-item {
+    padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 0.5px solid #d1d1d6; font-size: 17px; background: white;
+}
+.detail { color: #8e8e93; }
+.arrow { color: #c7c7cc; margin-left: 5px; }
+
+/* SWITCH */
+.switch { position: relative; width: 51px; height: 31px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; inset: 0; background: #e9e9ea; border-radius: 34px; transition: .4s; }
+.slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background: white; border-radius: 50%; transition: .4s; box-shadow: 0 3px 8px rgba(0,0,0,0.15); }
+input:checked + .slider { background: var(--ios-green); }
+input:checked + .slider:before { transform: translateX(20px); }
+
+/* GALERIA & NOTAS */
+.section-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+.gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 2px; }
+.gallery-item { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+.btn-upload { background: var(--ios-blue); color: white; padding: 8px 16px; border-radius: 20px; font-weight: 600; }
+.btn-save-note { background: var(--ios-blue); color: white; border: none; padding: 15px; margin: 20px; border-radius: 12px; font-weight: bold; }

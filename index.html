@@ -10,7 +10,7 @@
 </head>
 <body>
 
-    <div id="ios-notification" class="notif-banner hidden">
+    <div id="ios-notification" class="notif-banner">
         <div class="notif-icon">✨</div>
         <div class="notif-content">
             <b id="notif-title">Actualización</b>
@@ -21,80 +21,76 @@
     <header class="navbar">
         <button id="btn-back" class="btn-apple hidden" onclick="goHome()">‹ Atrás</button>
         <div class="spacer"></div>
-        <button id="btn-settings" class="btn-apple" onclick="openView('view-settings')">Ajustes</button>
+        <button id="btn-settings-nav" class="btn-apple" onclick="openView('view-settings')">Ajustes</button>
     </header>
 
-    <main id="main-menu" class="view active">
-        <div id="pages-wrapper" class="pages-wrapper">
-            <div class="page" id="page-1">
-                <div id="widgets-container"></div>
-                <div class="app-grid">
-                    <div class="ios-card" onclick="openView('view-notes')">
-                        <span class="icon">📝</span>
-                        <span class="label">Notas</span>
-                    </div>
-                    <div class="ios-card" onclick="openView('view-cloud')">
-                        <span class="icon">📸</span>
-                        <span class="label">Nube</span>
-                    </div>
-                </div>
+    <main id="view-home" class="view active">
+        <h1 class="main-title">Hola, Amor ❤️</h1>
+        <div class="app-grid">
+            <div class="ios-card" onclick="openView('view-notes')">
+                <span class="icon">📝</span>
+                <span class="label">Notas</span>
             </div>
-            <div class="page" id="page-2">
-                <div class="app-grid">
-                    <div class="ios-card" onclick="checkForUpdates()">
-                        <span class="icon">🚀</span>
-                        <span class="label">Actualizar</span>
-                    </div>
-                </div>
+            <div class="ios-card" onclick="openView('view-cloud')">
+                <span class="icon">📸</span>
+                <span class="label">Nube</span>
             </div>
-        </div>
-        <div class="page-dots">
-            <span class="dot active"></span>
-            <span class="dot"></span>
         </div>
     </main>
 
-    <section id="view-cloud" class="view">
-        <div class="gallery-header">
-            <h2 style="color: var(--navy);">Nuestra Nube</h2>
-            <label for="upload-photo" class="btn-upload">Añadir Foto</label>
-            <input type="file" id="upload-photo" accept="image/*" style="display:none;">
-        </div>
-        <div id="gallery-grid" class="gallery-grid">
-            </div>
-    </section>
-
     <section id="view-settings" class="view">
         <h1 class="main-title">Ajustes</h1>
+        
+        <div class="profile-card" onclick="editProfile()">
+            <div class="profile-img">👤</div>
+            <div class="profile-info">
+                <b id="prof-name">Tu Nombre</b>
+                <span id="prof-mail">configurar@gmail.com</span>
+            </div>
+            <span class="arrow">›</span>
+        </div>
+
+        <div class="settings-group">
+            <div class="settings-item" onclick="updateSoftware()">
+                <span>Actualización de software</span>
+                <span class="detail">1.0.1 <span class="arrow">›</span></span>
+            </div>
+        </div>
+
         <div class="settings-group">
             <div class="settings-item">
                 <span>Notificaciones</span>
                 <label class="switch">
-                    <input type="checkbox" id="notif-toggle" checked>
+                    <input type="checkbox" id="notif-check" checked>
                     <span class="slider"></span>
                 </label>
             </div>
-            <div class="settings-item" onclick="requestSystemPermissions()">
-                <span style="color: var(--ios-blue);">Permisos del sistema</span>
-            </div>
-            <div class="settings-item" onclick="sendTestNotif()">
-                <span>Probar Notificación</span>
+            <div class="settings-item" onclick="testNotif()">
+                <span>Prueba de notificación</span>
                 <span class="arrow">›</span>
             </div>
         </div>
     </section>
 
-    <section id="view-notes" class="view">
-        <div id="notes-list-view">
-            <div class="gallery-header">
-                <h2>Notas</h2>
-                <button class="btn-upload" onclick="createNewNote()">+</button>
-            </div>
-            <div id="notes-list" class="notes-list"></div>
+    <section id="view-cloud" class="view">
+        <div class="section-header">
+            <h2>Nuestra Nube</h2>
+            <label class="btn-upload">Subir <input type="file" id="up-file" hidden accept="image/*"></label>
         </div>
-        <div id="note-editor-view" class="hidden">
-            <textarea id="notes-editor" placeholder="Escribe aquí..."></textarea>
-            <button class="btn-floating-save" onclick="closeNoteEditor()">Guardar</button>
+        <div id="gallery" class="gallery-grid"></div>
+    </section>
+
+    <section id="view-notes" class="view">
+        <div id="notes-list-area">
+            <div class="section-header">
+                <h2>Notas</h2>
+                <button class="btn-apple" onclick="showEditor()">Nueva +</button>
+            </div>
+            <div id="list-container" class="notes-list"></div>
+        </div>
+        <div id="notes-editor-area" class="hidden">
+            <textarea id="notes-editor" placeholder="Escribe algo lindo..."></textarea>
+            <button class="btn-save-note" onclick="saveNote()">Listo</button>
         </div>
     </section>
 

@@ -130,3 +130,22 @@ window.onload = () => {
         document.getElementById('setup-guide').classList.remove('hidden');
     }
 };
+function actualizarContador() {
+    // CAMBIA ESTA FECHA: Año, Mes (0-11), Día
+    // Ejemplo: 2023, 0 (enero), 15
+    const fechaInicio = new Date(2025, 11, 21); 
+    const ahora = new Date();
+    
+    const diff = ahora - fechaInicio;
+    
+    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+    document.getElementById('timer-display').innerText = `${dias} días, ${horas}h y ${minutos}m`;
+}
+
+// Actualizar cada minuto
+setInterval(actualizarContador, 60000);
+// Y llamar una vez al cargar
+actualizarContador();

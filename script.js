@@ -1,27 +1,40 @@
-const notesEditor = document.querySelector('.notes-editor');
+// Seleccionamos los elementos
+const btnNotes = document.getElementById('btn-notes');
+const btnCloud = document.getElementById('btn-cloud');
+const btnBack = document.getElementById('btn-back');
+const mainMenu = document.getElementById('main-menu');
+const notesView = document.getElementById('notes-view');
+const cloudView = document.getElementById('cloud-view');
+const notesEditor = document.getElementById('notes-editor');
 
-// Al cargar la página, recuperar nota guardada
-window.onload = () => {
-    const savedNote = localStorage.getItem('miNotaSecreta');
-    if (savedNote) {
-        notesEditor.value = savedNote;
-    }
-};
+// Función para cambiar de vista
+function showView(viewToShow) {
+    mainMenu.classList.add('hidden');
+    notesView.classList.add('hidden');
+    cloudView.classList.add('hidden');
+    
+    viewToShow.classList.remove('hidden');
+    btnBack.style.visibility = 'visible';
+}
 
-// Guardar automáticamente mientras escribe
-notesEditor.addEventListener('input', () => {
-    localStorage.setItem('miNotaSecreta', notesEditor.value);
+// Botón Atrás
+btnBack.addEventListener('click', () => {
+    mainMenu.classList.remove('hidden');
+    notesView.classList.add('hidden');
+    cloudView.classList.add('hidden');
+    btnBack.style.visibility = 'hidden';
 });
 
-function openView(viewId) {
-    document.querySelectorAll('section').forEach(s => s.style.display = 'none');
-    document.getElementById('main-menu').style.display = 'none';
-    document.getElementById(viewId).style.display = 'flex';
-    document.getElementById('btn-back').style.display = 'block';
-}
+// Eventos de los botones principales
+btnNotes.addEventListener('click', () => showView(notesView));
+btnCloud.addEventListener('click', () => showView(cloudView));
 
-function goHome() {
-    document.querySelectorAll('section').forEach(s => s.style.display = 'none');
-    document.getElementById('main-menu').style.display = 'block';
-    document.getElementById('btn-back').style.display = 'none';
-}
+// Lógica de Notas (Auto-guardado)
+window.onload = () => {
+    const saved = localStorage.getItem('notaAmor');
+    if (saved) notesEditor.value = saved;
+};
+
+notesEditor.addEventListener('input', () => {
+    localStorage.setItem('notaAmor', notesEditor.value);
+});

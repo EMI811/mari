@@ -75,3 +75,23 @@ input:checked + .slider:before { transform: translateX(20px); }
 .gallery-item { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
 .btn-upload { background: var(--ios-blue); color: white; padding: 8px 16px; border-radius: 20px; font-weight: 600; }
 .btn-save-note { background: var(--ios-blue); color: white; border: none; padding: 15px; margin: 20px; border-radius: 12px; font-weight: bold; }
+/* MODAL DE GUIA INICIAL */
+.modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+    display: flex; align-items: center; justify-content: center; z-index: 5000;
+    backdrop-filter: blur(5px);
+}
+.guide-card {
+    background: white; width: 85%; border-radius: 25px; padding: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3); text-align: center;
+}
+.guide-header { display: flex; justify-content: space-between; color: #8e8e93; font-size: 13px; margin-bottom: 10px; }
+.btn-close-guide { background: none; border: none; font-size: 18px; color: #ccc; }
+.guide-icon { font-size: 50px; margin: 10px 0; }
+.guide-body h3 { margin: 10px 0; font-size: 22px; color: #000; }
+.guide-body p { color: #3a3a3c; font-size: 15px; }
+.guide-body ol { text-align: left; font-size: 14px; line-height: 1.6; color: #3a3a3c; padding-left: 25px; }
+.btn-got-it {
+    background: var(--ios-blue); color: white; border: none; width: 100%;
+    padding: 15px; border-radius: 15px; font-weight: bold; margin-top: 20px; font-size: 16px;
+}

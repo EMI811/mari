@@ -96,4 +96,23 @@
 
     <script src="script.js"></script>
 </body>
+<div id="setup-guide" class="modal-overlay hidden">
+    <div class="guide-card">
+        <div class="guide-header">
+            <span>Instalación</span>
+            <button onclick="closeGuide()" class="btn-close-guide">✕</button>
+        </div>
+        <div class="guide-body">
+            <div class="guide-icon">📲</div>
+            <h3>Instala nuestra App</h3>
+            <p>Para que se vea como un iPhone real:</p>
+            <ol>
+                <li>Toca el botón <b>Compartir</b> (el cuadradito con la flecha hacia arriba) en la parte de abajo de Safari.</li>
+                <li>Busca y toca donde dice <b>"Agregar a inicio"</b>.</li>
+                <li>¡Listo! Ya la tendrás junto a tus otras apps.</li>
+            </ol>
+        </div>
+        <button class="btn-got-it" onclick="closeGuide()">Entendido</button>
+    </div>
+</div>
 </html>

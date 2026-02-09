@@ -102,3 +102,39 @@ function renderNotes() {
 }
 
 window.onload = () => { loadProfile(); renderGallery(); renderNotes(); };
+// CONTROL DE VERSIONES Y GUÍA
+const currentVersion = "1.0.1"; // Si cambias esto a "1.0.2", la guía volverá a salir
+
+function checkFirstTime() {
+    const savedVersion = localStorage.getItem('app_version');
+    // Si la versión guardada es diferente a la actual, mostramos la guía
+    if (savedVersion !== currentVersion) {
+        document.getElementById('setup-guide').classList.remove('hidden');
+    }
+}
+
+function closeGuide() {
+    document.getElementById('setup-guide').classList.add('hidden');
+    // Guardamos la versión actual para que no vuelva a salir
+    localStorage.setItem('app_version', currentVersion);
+    showBanner("Sistema", "Instrucciones guardadas.");
+}
+
+// VINCULAMOS A LA ACTUALIZACIÓN DE SOFTWARE
+function updateSoftware() {
+    showBanner("Buscando...", "Verificando actualizaciones.");
+    setTimeout(() => {
+        // Simulamos que encontramos una mejora
+        showBanner("¡Actualizado!", "Has recibido la versión " + currentVersion);
+        // Opcional: Podrías forzar que salga la guía de nuevo si quieres
+        // document.getElementById('setup-guide').classList.remove('hidden');
+    }, 2500);
+}
+
+// CARGA INICIAL (Agrega esto dentro de window.onload)
+window.onload = () => {
+    loadProfile();
+    renderGallery();
+    renderNotes();
+    checkFirstTime(); // <--- Esta es la nueva función
+};

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Para Mi Niña</title>
+    <title>Notas</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="style.css">
@@ -11,17 +11,17 @@
 <body>
 
     <header class="navbar">
-        <button id="btn-back" class="btn-apple" style="visibility: hidden;">‹ Carpetas</button>
+        <button id="btn-back" class="btn-apple" style="visibility: hidden;">‹ Atrás</button>
         <div class="spacer"></div>
-        <button class="btn-apple settings-icon">•••</button>
+        <button id="btn-settings" class="btn-apple">Ajustes</button>
     </header>
 
     <main id="main-menu" class="view">
-        <h1 class="main-title">Hola, Amor ❤️</h1>
+        <h1 class="main-title">Notas</h1>
         <div class="app-grid">
             <div class="ios-card" id="btn-notes">
                 <span class="icon">📝</span>
-                <span class="label">Notas</span>
+                <span class="label">Mis Notas</span>
             </div>
             <div class="ios-card" id="btn-cloud">
                 <span class="icon">☁️</span>
@@ -31,16 +31,29 @@
     </main>
 
     <section id="notes-view" class="view hidden">
-        <textarea id="notes-editor" class="notes-textarea" placeholder="Escribe algo aquí..."></textarea>
-    </section>
-
-    <section id="cloud-view" class="view hidden">
-        <div class="cloud-content">
-            <span class="big-icon">☁️</span>
-            <h2>Nuestra Nube</h2>
-            <p>Aquí guardaremos nuestros recuerdos pronto.</p>
+        <div class="notes-container">
+            <div class="notes-sidebar-line"></div>
+            <textarea id="notes-editor" class="notes-textarea" placeholder="Escribe una nota..."></textarea>
         </div>
     </section>
+
+    <div id="modal-settings" class="modal hidden">
+        <div class="modal-content">
+            <h2>Ajustes</h2>
+            <div class="setting-item">
+                <span>Modo Oscuro</span>
+                <input type="checkbox" id="dark-mode-toggle">
+            </div>
+            <div class="setting-item" onclick="changeTheme()">
+                <span>Cambiar Color Fondo</span>
+                <span class="arrow">›</span>
+            </div>
+            <div class="setting-item" onclick="clearNotes()" style="color: #ff3b30;">
+                <span>Borrar Todo</span>
+            </div>
+            <button onclick="closeSettings()" class="btn-close">Listo</button>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

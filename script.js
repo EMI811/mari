@@ -1,40 +1,48 @@
-// Seleccionamos los elementos
+// Elementos
 const btnNotes = document.getElementById('btn-notes');
-const btnCloud = document.getElementById('btn-cloud');
 const btnBack = document.getElementById('btn-back');
-const mainMenu = document.getElementById('main-menu');
+const btnSettings = document.getElementById('btn-settings');
+const modalSettings = document.getElementById('modal-settings');
 const notesView = document.getElementById('notes-view');
-const cloudView = document.getElementById('cloud-view');
+const mainMenu = document.getElementById('main-menu');
 const notesEditor = document.getElementById('notes-editor');
+const darkModeToggle = document.getElementById('dark-mode-toggle');
 
-// Función para cambiar de vista
-function showView(viewToShow) {
+// Navegación
+btnNotes.addEventListener('click', () => {
     mainMenu.classList.add('hidden');
-    notesView.classList.add('hidden');
-    cloudView.classList.add('hidden');
-    
-    viewToShow.classList.remove('hidden');
+    notesView.classList.remove('hidden');
     btnBack.style.visibility = 'visible';
-}
+});
 
-// Botón Atrás
 btnBack.addEventListener('click', () => {
     mainMenu.classList.remove('hidden');
     notesView.classList.add('hidden');
-    cloudView.classList.add('hidden');
     btnBack.style.visibility = 'hidden';
 });
 
-// Eventos de los botones principales
-btnNotes.addEventListener('click', () => showView(notesView));
-btnCloud.addEventListener('click', () => showView(cloudView));
+// Ajustes
+btnSettings.addEventListener('click', () => modalSettings.classList.remove('hidden'));
+function closeSettings() { modalSettings.classList.add('hidden'); }
 
-// Lógica de Notas (Auto-guardado)
+// Función Borrar
+function clearNotes() {
+    if(confirm("¿Seguro que quieres borrar todas las notas?")) {
+        notesEditor.value = "";
+        localStorage.removeItem('nota_amor');
+    }
+}
+
+// Modo Oscuro
+darkModeToggle.addEventListener('change', () => {
+    document.body.classList.toggle('dark');
+});
+
+// Guardado Automático
 window.onload = () => {
-    const saved = localStorage.getItem('notaAmor');
-    if (saved) notesEditor.value = saved;
+    notesEditor.value = localStorage.getItem('nota_amor') || "";
 };
 
 notesEditor.addEventListener('input', () => {
-    localStorage.setItem('notaAmor', notesEditor.value);
+    localStorage.setItem('nota_amor', notesEditor.value);
 });

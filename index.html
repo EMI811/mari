@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Para Mi Niña</title>
+    <title>MyLove OS</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="style.css">
@@ -11,20 +11,28 @@
 <body>
 
     <header class="navbar">
-        <button id="btn-back" class="btn-apple" onclick="goHome()" style="visibility: hidden;">‹ Atrás</button>
+        <button id="btn-add" class="btn-apple hidden">+</button>
+        <button id="btn-back" class="btn-apple hidden" onclick="goHome()">‹ Atrás</button>
+        <div class="spacer"></div>
+        <button id="btn-done" class="btn-apple hidden" onclick="stopJiggle()">Listo</button>
         <button id="btn-settings" class="btn-apple">Ajustes</button>
     </header>
 
     <main id="main-menu" class="view active">
-        <h1 class="main-title">Nuestra App ❤️</h1>
+        <div id="photo-widget" class="widget">
+            <div id="widget-content">
+                <p id="widget-msg">Mantén pulsado para editar y subir fotos</p>
+            </div>
+        </div>
+
         <div class="app-grid">
-            <div class="ios-card" onclick="openView('view-notes')">
+            <div class="ios-card" id="card-notes" onclick="openView('view-notes')">
                 <span class="icon">📝</span>
                 <span class="label">Notas</span>
             </div>
-            <div class="ios-card" onclick="openView('view-cloud')">
+            <div class="ios-card" id="card-cloud" onclick="openView('view-cloud')">
                 <span class="icon">📸</span>
-                <span class="label">Nuestra Nube</span>
+                <span class="label">Nube</span>
             </div>
         </div>
     </main>
@@ -32,29 +40,18 @@
     <section id="view-notes" class="view">
         <div class="notes-container">
             <div class="notes-line"></div>
-            <textarea id="notes-editor" placeholder="Escribe aquí nuestro próximo plan..."></textarea>
+            <textarea id="notes-editor" placeholder="Escribe algo..."></textarea>
         </div>
     </section>
 
     <section id="view-cloud" class="view">
         <div class="gallery-header">
-            <h2>Galería</h2>
-            <label for="upload-photo" class="btn-upload">Subir Foto</label>
+            <h2 style="color: #001f3f;">Galería</h2>
+            <label for="upload-photo" class="btn-upload">Subir</label>
             <input type="file" id="upload-photo" accept="image/*" hidden>
         </div>
         <div id="gallery-grid" class="gallery-grid"></div>
     </section>
-
-    <div id="modal-settings" class="modal hidden">
-        <div class="modal-content">
-            <h3>Ajustes</h3>
-            <div class="setting-row">
-                <span>Modo Oscuro</span>
-                <input type="checkbox" id="dark-toggle">
-            </div>
-            <button onclick="closeSettings()" class="btn-close">Listo</button>
-        </div>
-    </div>
 
     <script src="script.js"></script>
 </body>

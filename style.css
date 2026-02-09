@@ -1,366 +1,161 @@
 :root { 
     --ios-blue: #007AFF; 
-    --ios-gray: #f2f2f7; 
-    --ios-green: #34C759;
-    --ios-red: #ff3b30;
-    --app-bg: var(--ios-gray); /* Fondo general de la app */
+    --app-bg: #f2f2f7; 
 }
 
 body { 
     margin: 0; 
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif; 
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif; 
     background: var(--app-bg); 
     height: 100vh; 
     overflow: hidden; 
-    transition: background 0.5s ease-in-out; 
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    transition: background 0.5s; 
+    -webkit-tap-highlight-color: transparent;
 }
 
-/* Barra de Navegación Superior */
-.navbar { 
-    padding: 60px 20px 10px; 
-    display: flex; 
-    background: rgba(255,255,255,0.7); 
-    backdrop-filter: blur(20px); 
-    -webkit-backdrop-filter: blur(20px); /* Para iOS */
-    z-index: 100; 
-    position: sticky;
-    top: 0;
-    width: 100%;
-    box-sizing: border-box; /* Para padding */
+/* --- MODO LIQUID GLASS --- */
+body.glass-active {
+    background: #000; /* Fallback */
 }
-.btn-apple { 
-    background: none; 
-    border: none; 
-    color: var(--ios-blue); 
-    font-size: 17px; 
-    font-weight: 400; /* Regular */
-    cursor: pointer;
-    -webkit-tap-highlight-color: rgba(0,0,0,0); /* Elimina el overlay al tocar */
+#liquid-bg {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    z-index: -1;
+    display: none; /* Oculto por defecto */
+}
+body.glass-active #liquid-bg { display: block; }
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Paneles de Vidrio (Glassmorphism) */
+body.glass-active .glass-panel, 
+body.glass-active .ios-card, 
+body.glass-active .section-header,
+body.glass-active .navbar,
+body.glass-active .msg {
+    background: rgba(255, 255, 255, 0.25) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    color: white !important;
+}
+body.glass-active h1, body.glass-active h2, body.glass-active span, body.glass-active b {
+    color: white !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+body.glass-active .btn-apple { color: #fff; }
+
+/* --- ANIMACIÓN JIGGLE (Temblor) --- */
+@keyframes jiggle {
+    0% { transform: rotate(-1deg); }
+    50% { transform: rotate(1deg); }
+    100% { transform: rotate(-1deg); }
+}
+.jiggle {
+    animation: jiggle 0.25s infinite;
+    position: relative;
+}
+.jiggle::after {
+    content: "✖";
+    position: absolute;
+    top: -5px; left: -5px;
+    background: rgba(255,255,255,0.8);
+    color: black;
+    border-radius: 50%;
+    width: 20px; height: 20px;
+    font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* --- LIGHTBOX (Visor de Fotos) --- */
+#lightbox {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+    z-index: 3000;
+    display: flex; justify-content: center; align-items: center;
+    backdrop-filter: blur(5px);
+}
+.lightbox-content {
+    width: 90%; height: 80%;
+    display: flex; flex-direction: column; align-items: center; gap: 20px;
+}
+#lightbox-img {
+    max-width: 100%; max-height: 80%;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(255,255,255,0.2);
+    transition: filter 0.3s;
+}
+.lightbox-controls { display: flex; gap: 15px; }
+.btn-glass {
+    background: rgba(255,255,255,0.2);
+    color: white; border: 1px solid rgba(255,255,255,0.4);
+    padding: 10px 20px; border-radius: 20px;
+    font-size: 16px; cursor: pointer;
+}
+.btn-glass.red { background: rgba(255, 59, 48, 0.4); border-color: red; }
+
+/* --- RESTO DEL ESTILO (Base) --- */
+.navbar { 
+    padding: 50px 20px 10px; display: flex; 
+    background: rgba(255,255,255,0.8); backdrop-filter: blur(20px); 
+    position: sticky; top: 0; z-index: 100;
 }
 .hidden { display: none !important; }
 .spacer { flex: 1; }
+.btn-apple { background: none; border: none; color: var(--ios-blue); font-size: 17px; cursor: pointer; }
 
-/* Vistas de Contenido */
 .view { 
-    display: none; 
-    height: calc(100vh - 80px); /* Altura total menos barra superior */
-    overflow-y: auto; 
-    padding-bottom: 50px; 
-    position: absolute; /* Para transiciones suaves */
-    top: 80px; /* Debajo de la navbar */
-    left: 0;
-    width: 100%;
-    transform: translateX(100%); /* Oculta a la derecha por defecto */
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Animación tipo iOS */
-    box-sizing: border-box;
-    background: var(--app-bg); /* Asegura que el fondo de la vista sea el mismo que el body */
+    display: none; height: calc(100vh - 80px); overflow-y: auto; 
+    padding-bottom: 80px; width: 100%; 
 }
-.view.active { 
-    display: flex; 
-    flex-direction: column; 
-    transform: translateX(0); /* Muestra en el centro */
-}
-/* Transición al ir hacia atrás */
-.view:not(.active) {
-    pointer-events: none; /* Deshabilita interacciones en vistas ocultas */
-}
-.view-home.active ~ .view { /* Cuando se abre una vista desde el home, el home retrocede un poco */
-    transform: translateX(-30%);
-}
+.view.active { display: block; animation: slideIn 0.3s ease; }
+@keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-
-.main-title { 
-    padding: 10px 25px; 
-    font-size: 34px; 
-    font-weight: 700; /* Bold */
-    margin: 0;
-    color: #1c1c1e;
-}
-
-/* Cuadrícula de Apps */
-.app-grid { 
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 15px; 
-    padding: 20px; 
-}
+.main-title { padding: 10px 25px; font-size: 34px; margin: 0; color: #000; }
+.app-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
 .ios-card { 
-    background: white; 
-    border-radius: 22px; 
-    aspect-ratio: 1/1; 
-    display: flex; 
-    flex-direction: column; 
-    justify-content: center; 
-    align-items: center; 
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
-    cursor: pointer;
-    transition: transform 0.1s ease-out;
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    background: white; border-radius: 22px; aspect-ratio: 1/1; 
+    display: flex; flex-direction: column; justify-content: center; align-items: center; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: transform 0.1s;
 }
-.ios-card:active { transform: scale(0.95); } /* Efecto al tocar */
+.ios-card:active { transform: scale(0.95); }
 .ios-card .icon { font-size: 40px; margin-bottom: 5px; }
-.ios-card .label { font-size: 14px; font-weight: 500; color: #333; }
 
-/* Grupos de Ajustes */
-.settings-group { 
-    background: white; 
-    margin: 10px 20px; 
-    border-radius: 12px; 
-    overflow: hidden; 
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-.settings-item { 
-    padding: 12px 16px; 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    border-bottom: 0.5px solid #eee; 
-    font-size: 17px;
-    color: #1c1c1e;
-}
-.settings-item:last-child { border-bottom: none; }
-.settings-item .arrow { color: #ccc; font-weight: 500; padding-left: 10px; } /* Flecha > */
-.settings-item button { /* Botones dentro de ajustes */
-    background: none; border: none; color: var(--ios-blue); font-size: 17px; font-weight: 600; cursor: pointer;
+.settings-group { background: white; margin: 10px 20px; border-radius: 12px; overflow: hidden; }
+.settings-item { padding: 15px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+
+/* Chat y Otros */
+.chat-box { height: calc(100% - 130px); padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.msg { padding: 8px 14px; border-radius: 18px; max-width: 75%; font-size: 15px; background: #e9e9eb; color:black;}
+.msg.sent { background: var(--ios-blue); color: white; align-self: flex-end; }
+.chat-input-area { padding: 10px; background: white; display: flex; gap: 10px; position: fixed; bottom: 0; width: 100%; box-sizing: border-box; }
+.chat-input-area input { flex: 1; padding: 10px; border-radius: 20px; border: 1px solid #ddd; outline: none; }
+
+.btn-main { 
+    background: var(--ios-blue); color: white; border: none; 
+    padding: 12px; width: 100%; border-radius: 12px; font-size: 16px; margin-top: 10px; 
 }
 
-/* Chat */
-.chat-box { 
-    flex: 1; 
-    padding: 15px; 
-    overflow-y: auto; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 8px; 
-}
-.msg { 
-    padding: 8px 14px; 
-    border-radius: 18px; 
-    max-width: 75%; 
-    font-size: 15px; 
-    line-height: 1.4;
-}
-.msg.sent { 
-    background: var(--ios-blue); 
-    color: white; 
-    align-self: flex-end; 
-    border-bottom-right-radius: 5px; /* Para que parezca burbuja */
-}
-.msg.received { 
-    background: #e9e9eb; 
-    color: black; 
-    align-self: flex-start; 
-    border-bottom-left-radius: 5px;
-}
-.chat-input-area { 
-    padding: 10px 20px 30px; 
-    background: white; 
-    display: flex; 
-    gap: 10px; 
-    border-top: 0.5px solid #ddd; 
-    box-sizing: border-box;
-    width: 100%;
-}
-.chat-input-area input { 
-    flex: 1; 
-    border: 1px solid #ddd; 
-    padding: 10px 15px; 
-    border-radius: 20px; 
-    font-size: 16px;
-    outline: none;
-}
-.chat-input-area .btn-send {
-    background: var(--ios-blue);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    cursor: pointer;
-}
+/* Galería Grid */
+.gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+.gallery-item { width: 100%; aspect-ratio: 1/1; object-fit: cover; cursor: pointer; }
 
-/* Juego */
-.game-area { 
-    position: relative; 
-    width: 90%; 
-    height: 60vh; 
-    background: #fdfdfd; 
-    margin: 0 auto; 
-    border-radius: 20px; 
-    overflow: hidden; 
-    border: 2px solid #ddd; 
-    touch-action: none; 
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.1); /* Efecto de inmersión */
-}
-#game-player { 
-    position: absolute; 
-    font-size: 40px; 
-    transition: left 0.05s linear, top 0.05s linear; /* Para movimientos más suaves */
-}
+/* Switch */
+.switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+.slider:before { position: absolute; content: ""; height: 24px; width: 24px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: #34C759; }
+input:checked + .slider:before { transform: translateX(22px); }
 
-/* Mapa */
-#mini-mapa { 
-    width: 100%; 
-    height: 200px; 
-    background: #ddd; 
-    border-radius: 20px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    font-size: 40px; 
-    color: #888;
-}
-
-/* Botón General de Acción (guardar, empezar, etc.) */
-.btn-save-note { 
-    background: var(--ios-blue); 
-    color: white; 
-    border: none; 
-    padding: 15px; 
-    width: calc(100% - 40px); /* 100% menos padding de los lados */
-    border-radius: 12px; 
-    font-weight: 600; 
-    font-size: 17px;
-    cursor: pointer;
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
-    margin-top: 15px;
-}
-
-/* Nube de Fotos */
-.gallery-grid { 
-    display: grid; 
-    grid-template-columns: 1fr 1fr 1fr; 
-    gap: 2px; /* Espacio mínimo entre fotos */
-    background: #eee;
-    padding: 2px; /* Padding interno */
-}
-.gallery-item { 
-    width: 100%; 
-    aspect-ratio: 1/1; 
-    object-fit: cover; 
-    display: block;
-    cursor: zoom-in;
-}
-
-/* Notificación Tipo Banner iOS */
-.notif-banner { 
-    position: fixed; 
-    top: 55px; 
-    left: 10px; 
-    right: 10px; 
-    z-index: 2000; 
-    background: rgba(255,255,255,0.9); 
-    border-radius: 20px; 
-    padding: 15px; 
-    display: flex; 
-    gap: 12px; 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-    transform: translateY(-200%); 
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Rebote */
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    align-items: center;
-}
-.notif-active { transform: translateY(0); }
-.notif-icon { font-size: 28px; }
-.notif-content b { font-weight: 600; display: block; margin-bottom: 2px; color: #1c1c1e; }
-.notif-content p { font-size: 14px; color: #555; margin: 0; }
-
-/* Switch iOS */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 45px;
-  height: 25px;
-}
-.switch input { 
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-  border-radius: 34px;
-}
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 20px;
-  width: 20px;
-  left: 2px;
-  bottom: 2.5px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-  border-radius: 50%;
-}
-input:checked + .slider {
-  background-color: var(--ios-green);
-}
-input:focus + .slider {
-  box-shadow: 0 0 1px var(--ios-green);
-}
-input:checked + .slider:before {
-  -webkit-transform: translateX(20px);
-  -ms-transform: translateX(20px);
-  transform: translateX(20px);
-}
-
-/* Fondos de Pantalla */
-.wp-option { 
-    aspect-ratio: 1/1; 
-    border-radius: 15px; 
-    cursor: pointer; 
-    border: 3px solid transparent; /* Borde transparente por defecto */
-    transition: border 0.2s ease-out;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-.wp-option:hover, .wp-option.active { /* Podrías añadir una clase active si quieres */
-    border: 3px solid var(--ios-blue);
-}
-
-/* Perfil en Ajustes */
-#user-avatar { 
-    text-transform: uppercase; 
-    font-weight: bold; 
-    color: #555;
-}
-
-/* Header de secciones internas */
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background: rgba(255,255,255,0.7);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    border-bottom: 0.5px solid #eee;
-}
-.section-header h2 {
-    font-size: 24px;
-    font-weight: 600;
-    margin: 0;
-    color: #1c1c1e;
-}
-.section-header .btn-apple {
-    font-size: 15px;
-    font-weight: 600;
-}
+/* Game Area */
+.game-area { height: 300px; background: #f9f9f9; border-radius: 15px; position: relative; overflow: hidden; border: 1px solid #ccc; }
+#game-player { position: absolute; font-size: 30px; transition: top 0.1s, left 0.1s; }

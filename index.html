@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MyLove OS</title>
+    <title>MyLove OS 3.0</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="style.css">
@@ -12,11 +12,24 @@
 </head>
 <body>
 
+    <div id="liquid-bg"></div>
+
     <div id="ios-notification" class="notif-banner">
         <div class="notif-icon">✨</div>
         <div class="notif-content">
             <b id="notif-title">Aviso</b>
             <p id="notif-msg">Mensaje recibido</p>
+        </div>
+    </div>
+
+    <div id="lightbox" class="hidden">
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="">
+            <div class="lightbox-controls">
+                <button onclick="applyFilter()" class="btn-glass">🎨 Filtro</button>
+                <button onclick="closeLightbox()" class="btn-glass">Cerrar</button>
+                <button onclick="deleteCurrentPhoto()" class="btn-glass red">🗑️ Borrar</button>
+            </div>
         </div>
     </div>
 
@@ -28,116 +41,120 @@
 
     <main id="view-home" class="view active">
         <h1 class="main-title">Hola, Amor ❤️</h1>
-        <div class="settings-group">
+        <div class="settings-group glass-panel">
             <div class="settings-item">
                 <div style="display:flex; flex-direction:column;">
-                    <span style="font-size: 11px; color: var(--ios-blue); font-weight: bold; text-transform: uppercase;">Nuestro Tiempo Juntos</span>
+                    <span style="font-size: 11px; color: var(--ios-blue); font-weight: bold; text-transform: uppercase;">Nuestro Tiempo</span>
                     <b id="timer-display" style="font-size: 18px;">Calculando...</b>
                 </div>
             </div>
         </div>
 
-        <div class="app-grid">
-            <div class="ios-card" onclick="openView('view-notes')"><span class="icon">📝</span><span class="label">Notas</span></div>
-            <div class="ios-card" onclick="openView('view-cloud')"><span class="icon">📸</span><span class="label">Fotos</span></div>
-            <div class="ios-card" onclick="openView('view-messages')"><span class="icon">💬</span><span class="label">Chat</span></div>
-            <div class="ios-card" onclick="openView('view-map')"><span class="icon">📍</span><span class="label">Buscar</span></div>
-            <div class="ios-card" onclick="openView('view-game-center')"><span class="icon">🎮</span><span class="label">Juegos</span></div>
-            <div class="ios-card" onclick="openView('view-wallpaper')"><span class="icon">🎨</span><span class="label">Fondo</span></div>
+        <div class="app-grid" id="app-grid">
+            <div class="ios-card glass-panel" onclick="handleAppClick('view-notes')" oncontextmenu="return false;">
+                <span class="icon">📝</span><span class="label">Notas</span>
+            </div>
+            <div class="ios-card glass-panel" onclick="handleAppClick('view-cloud')" oncontextmenu="return false;">
+                <span class="icon">📸</span><span class="label">Fotos</span>
+            </div>
+            <div class="ios-card glass-panel" onclick="handleAppClick('view-messages')" oncontextmenu="return false;">
+                <span class="icon">💬</span><span class="label">Chat</span>
+            </div>
+            <div class="ios-card glass-panel" onclick="handleAppClick('view-map')" oncontextmenu="return false;">
+                <span class="icon">📍</span><span class="label">Buscar</span>
+            </div>
+            <div class="ios-card glass-panel" onclick="handleAppClick('view-game-center')" oncontextmenu="return false;">
+                <span class="icon">🎮</span><span class="label">Juegos</span>
+            </div>
+            <div class="ios-card glass-panel" onclick="handleAppClick('view-wallpaper')" oncontextmenu="return false;">
+                <span class="icon">🎨</span><span class="label">Fondo</span>
+            </div>
         </div>
+        <p style="text-align:center; opacity:0.5; font-size:12px; margin-top:20px;">Mantén presionado para editar</p>
     </main>
 
     <section id="view-game-center" class="view">
-        <h1 class="main-title">Game Arcade</h1>
-        <div class="settings-group">
-            <div class="settings-item" onclick="openGame('catch')"><span>🍎 Catch My Love</span><span class="arrow">Jugar ›</span></div>
-            <div class="settings-item" onclick="openGame('flappy')"><span>🐦 Flappy Heart</span><span class="arrow">Jugar ›</span></div>
-            <div class="settings-item" onclick="openGame('jump')"><span>☁️ Love Jump</span><span class="arrow">Jugar ›</span></div>
+        <h1 class="main-title">Arcade</h1>
+        <div class="settings-group glass-panel">
+            <div class="settings-item" onclick="openGame('catch')"><span>🍎 Catch My Love</span><span class="arrow">›</span></div>
+            <div class="settings-item" onclick="openGame('flappy')"><span>🐦 Flappy Heart</span><span class="arrow">›</span></div>
+            <div class="settings-item" onclick="openGame('jump')"><span>☁️ Love Jump</span><span class="arrow">›</span></div>
         </div>
     </section>
 
     <section id="view-game-play" class="view">
-        <div class="section-header">
+        <div class="section-header glass-panel">
             <h2 id="game-title">Juego</h2>
-            <b id="game-score">Puntos: 0</b>
+            <b id="game-score">0</b>
         </div>
-        <div id="game-canvas-container" class="game-area">
+        <div id="game-canvas-container" class="game-area glass-panel">
             <div id="game-player">❤️</div>
-            </div>
+        </div>
         <div style="padding:20px; text-align: center;">
-            <button class="btn-save-note" id="btn-start-game">¡Empezar!</button>
+            <button class="btn-main" id="btn-start-game">¡Jugar!</button>
         </div>
     </section>
 
     <section id="view-messages" class="view">
-        <div class="section-header"><h2>LoveChat</h2></div>
+        <div class="section-header glass-panel"><h2>Chat</h2></div>
         <div id="chat-container" class="chat-box"></div>
-        <div class="chat-input-area">
+        <div class="chat-input-area glass-panel">
             <input type="text" id="chat-input" placeholder="Mensaje...">
-            <button class="btn-send" onclick="sendMsg()">↗️</button>
+            <button class="btn-send" onclick="sendMsg()">↑</button>
         </div>
     </section>
 
     <section id="view-map" class="view">
-        <div class="section-header"><h2>Encuéntrame</h2><button class="btn-apple" onclick="compartirUbicacion()">📍 Enviar mi posición</button></div>
+        <div class="section-header glass-panel"><h2>Ubicación</h2></div>
         <div id="map-info" style="padding: 20px; text-align: center;">
-            <p id="distancia-texto">Buscando el amor...</p>
-            <div id="mini-mapa">🗺️</div>
-            <a id="link-google-maps" href="#" target="_blank" class="btn-save-note" style="display:none; text-decoration:none;">Ver en Google Maps</a>
+            <div class="glass-panel" style="padding:20px; margin-bottom:20px;">
+                <p id="distancia-texto">Esperando señal...</p>
+                <a id="link-google-maps" href="#" target="_blank" class="btn-main" style="display:none; text-decoration:none;">Abrir Mapa</a>
+            </div>
+            <button class="btn-main" onclick="compartirUbicacion()">📍 Enviar mi posición</button>
         </div>
     </section>
 
     <section id="view-notes" class="view">
         <div id="notes-list-area">
-            <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; padding: 20px;">
-                <h2>Notas Compartidas</h2>
-                <button class="btn-apple" onclick="showEditor()">Nueva +</button>
+            <div class="section-header glass-panel">
+                <h2>Notas</h2>
+                <button class="btn-apple" onclick="showEditor()">+</button>
             </div>
-            <div id="list-container" class="settings-group">
-            </div>
+            <div id="list-container" class="settings-group glass-panel" style="background:transparent; box-shadow:none;"></div>
         </div>
         
         <div id="notes-editor-area" class="hidden" style="padding: 20px;">
-            <textarea id="notes-editor" placeholder="Escribe algo lindo..." style="width: 100%; height: 200px; border-radius: 15px; border: 1px solid #ddd; padding: 15px; font-size: 16px; margin-bottom: 20px;"></textarea>
-            <button class="btn-save-note" onclick="saveNote()">Publicar Nota</button>
+            <textarea id="notes-editor" class="glass-panel" placeholder="Escribe algo lindo..." style="width: 100%; height: 200px; padding: 15px; border:none;"></textarea>
+            <button class="btn-main" onclick="saveNote()">Guardar</button>
         </div>
     </section>
 
     <section id="view-settings" class="view">
         <h1 class="main-title">Ajustes</h1>
         
-        <div class="settings-group">
-            <div class="settings-item" style="height: auto; padding: 20px;">
-                <div style="text-align: center; width: 100%;">
-                    <div id="user-avatar" style="font-size: 50px; background: #e5e5ea; width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center;">👤</div>
-                    <b id="display-name" style="font-size: 20px;">Invitado</b>
-                    <p id="display-role" style="color: gray; font-size: 14px; margin: 5px 0;">Perfil no configurado</p>
-                    <button class="btn-apple" onclick="login()" style="font-weight: bold;">Cambiar Perfil / Entrar</button>
+        <div class="settings-group glass-panel">
+            <div class="settings-item" onclick="login()">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div id="user-avatar" style="background:#ddd; width:40px; height:40px; border-radius:50%; display:flex; justify-content:center; align-items:center;">👤</div>
+                    <div style="display:flex; flex-direction:column;">
+                        <b id="display-name">Invitado</b>
+                        <span style="font-size:12px; opacity:0.6">Toca para entrar</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="settings-group">
+        <div class="settings-group glass-panel">
             <div class="settings-item">
-                <span>Versión del OS</span>
-                <span class="detail" style="color:gray">2.0.0 (Gold Edition)</span>
-            </div>
-            <div class="settings-item" onclick="borrarTodo()">
-                <span style="color: #ff3b30;">Cerrar Sesión y Borrar Datos</span>
-            </div>
-        </div>
-
-        <div class="settings-group">
-            <div class="settings-item" onclick="pedirPermisoNotif()">
-                <span>Activar avisos reales</span>
-                <span class="arrow">›</span>
-            </div>
-             <div class="settings-item">
-                <span>Notificaciones Internas</span>
+                <span>Modo Liquid Glass 💧</span>
                 <label class="switch">
-                    <input type="checkbox" id="notif-check" checked onchange="saveSetting('notif', this.checked)">
+                    <input type="checkbox" id="glass-check" onchange="toggleGlassMode(this.checked)">
                     <span class="slider"></span>
                 </label>
+            </div>
+            <div class="settings-item" onclick="borrarTodo()">
+                <span style="color: #ff3b30;">Resetear App</span>
             </div>
         </div>
     </section>
@@ -145,22 +162,22 @@
     <section id="view-wallpaper" class="view">
         <h1 class="main-title">Fondos</h1>
         <div class="app-grid">
-            <div class="wp-option" style="background:#f2f2f7; border: 1px solid #ddd;" onclick="setWP('#f2f2f7')"></div>
+            <div class="wp-option" style="background:#f2f2f7;" onclick="setWP('#f2f2f7')"></div>
             <div class="wp-option" style="background:#ffdeeb;" onclick="setWP('#ffdeeb')"></div>
             <div class="wp-option" style="background:#e1f5fe;" onclick="setWP('#e1f5fe')"></div>
-            <div class="wp-option" style="background:#1c1c1e;" onclick="setWP('#1c1c1e')"></div>
+            <div class="wp-option" style="background:linear-gradient(45deg, #ff9a9e, #fad0c4);" onclick="setWP('linear-gradient(45deg, #ff9a9e, #fad0c4)')"></div>
         </div>
     </section>
 
     <section id="view-cloud" class="view">
-        <div class="section-header">
-            <h2>Nube de Fotos</h2>
-            <label class="btn-upload" style="background: var(--ios-blue); color: white; padding: 10px 20px; border-radius: 20px; cursor: pointer;">
-                Subir Foto 📸
+        <div class="section-header glass-panel">
+            <h2>Galería</h2>
+            <label class="btn-apple" style="cursor: pointer;">
+                Subir +
                 <input type="file" id="up-file" accept="image/*" hidden>
             </label>
         </div>
-        <div id="gallery" class="gallery-grid" style="padding-top: 20px;"></div>
+        <div id="gallery" class="gallery-grid" style="padding: 10px;"></div>
     </section>
 
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>

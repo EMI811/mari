@@ -1,72 +1,67 @@
 :root {
     --ios-blue: #007AFF;
-    --notes-bg: #fdfcf5;
+    --bg-light: #f2f2f7;
+    --card-bg: rgba(255, 255, 255, 0.85);
 }
 
 body {
     margin: 0;
-    font-family: -apple-system, system-ui, sans-serif;
-    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #f2f2f7; /* Gris claro original de iOS */
     height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
 }
 
 .navbar {
-    padding: 60px 20px 10px;
+    padding: 55px 20px 10px;
     display: flex;
     justify-content: space-between;
+    background: rgba(242, 242, 247, 0.8);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    position: sticky; top: 0; z-index: 10;
 }
 
-.btn-apple { background: none; border: none; color: var(--ios-blue); font-size: 17px; cursor: pointer; }
+.btn-apple { background: none; border: none; color: var(--ios-blue); font-size: 17px; font-weight: 500; }
 
-.main-title { padding: 10px 25px; font-size: 34px; font-weight: 800; }
+.main-title { padding: 10px 25px; font-size: 34px; font-weight: 800; letter-spacing: -1px; margin: 0; }
 
-.app-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
+.app-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; padding: 25px; }
 
 .ios-card {
-    background: rgba(255, 255, 255, 0.7);
-    border-radius: 25px;
+    background: var(--card-bg);
+    border-radius: 28px; /* Radio perfecto de Apple */
     aspect-ratio: 1/1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 0.5px solid rgba(0,0,0,0.1);
 }
 
-/* VISTAS */
-.view { display: none; flex: 1; flex-direction: column; overflow-y: auto; }
-.active { display: flex; }
+.ios-card .icon { font-size: 42px; margin-bottom: 12px; }
+.ios-card .label { font-weight: 600; font-size: 15px; color: #1c1c1e; }
 
-/* ESTILO NOTAS */
-.notes-container { display: flex; flex: 1; background: var(--notes-bg); }
-.notes-line { width: 2px; background: rgba(255, 204, 0, 0.3); margin-left: 40px; }
+/* NOTAS */
+.view { display: none; flex: 1; overflow-y: auto; background: #fff; }
+.view.active { display: flex; flex-direction: column; }
+
+.notes-container { display: flex; flex: 1; background: #fdfcf5; }
+.notes-line { width: 1.5px; background: #ffcc00; opacity: 0.3; margin-left: 45px; }
 #notes-editor {
     flex: 1; border: none; outline: none; background: transparent;
-    padding: 20px; font-size: 18px; line-height: 1.5; resize: none;
+    padding: 20px 20px 20px 10px; font-size: 17px; line-height: 1.6;
 }
 
 /* GALERÍA */
-.gallery-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-.btn-upload { background: var(--ios-blue); color: white; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: 600; }
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-    padding: 2px;
-}
-.gallery-item {
-    width: 100%;
-    aspect-ratio: 1/1;
-    object-fit: cover;
-}
+.gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 2px; }
+.gallery-item { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+.btn-upload { background: var(--ios-blue); color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: 600; }
 
 /* MODAL */
-.modal { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center; z-index:100; }
-.modal-content { background:white; width:80%; border-radius:20px; padding:20px; }
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 100; }
+.modal-content { background: #fff; width: 80%; border-radius: 20px; padding: 25px; }
+.setting-row { display: flex; justify-content: space-between; padding: 15px 0; border-top: 0.5px solid #eee; }
 .hidden { display: none !important; }

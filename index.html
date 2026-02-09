@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Nuestra App</title>
+    <title>Para Mi Niña</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="style.css">
@@ -11,8 +11,7 @@
 <body>
 
     <header class="navbar">
-        <button id="btn-back" class="btn-apple" style="visibility: hidden;">‹ Atrás</button>
-        <div class="spacer"></div>
+        <button id="btn-back" class="btn-apple" onclick="goHome()" style="visibility: hidden;">‹ Atrás</button>
         <button id="btn-settings" class="btn-apple">Ajustes</button>
     </header>
 
@@ -25,7 +24,7 @@
             </div>
             <div class="ios-card" onclick="openView('view-cloud')">
                 <span class="icon">📸</span>
-                <span class="label">Galería</span>
+                <span class="label">Nuestra Nube</span>
             </div>
         </div>
     </main>
@@ -33,28 +32,27 @@
     <section id="view-notes" class="view">
         <div class="notes-container">
             <div class="notes-line"></div>
-            <textarea id="notes-editor" placeholder="Escribe algo aquí..."></textarea>
+            <textarea id="notes-editor" placeholder="Escribe aquí nuestro próximo plan..."></textarea>
         </div>
     </section>
 
     <section id="view-cloud" class="view">
         <div class="gallery-header">
-            <h2>Nuestros Momentos</h2>
-            <label for="upload-photo" class="btn-upload">Añadir Foto +</label>
+            <h2>Galería</h2>
+            <label for="upload-photo" class="btn-upload">Subir Foto</label>
             <input type="file" id="upload-photo" accept="image/*" hidden>
         </div>
-        <div id="gallery-grid" class="gallery-grid">
-            </div>
+        <div id="gallery-grid" class="gallery-grid"></div>
     </section>
 
     <div id="modal-settings" class="modal hidden">
         <div class="modal-content">
-            <h3>Configuración</h3>
+            <h3>Ajustes</h3>
             <div class="setting-row">
                 <span>Modo Oscuro</span>
                 <input type="checkbox" id="dark-toggle">
             </div>
-            <button onclick="closeSettings()" class="btn-close">Cerrar</button>
+            <button onclick="closeSettings()" class="btn-close">Listo</button>
         </div>
     </div>
 

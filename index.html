@@ -11,7 +11,7 @@
 <body>
 
     <header class="navbar">
-        <button id="btn-add" class="btn-apple hidden">+</button>
+        <button id="btn-add" class="btn-apple hidden" onclick="showWidgetMenu()">+</button>
         <button id="btn-back" class="btn-apple hidden" onclick="goHome()">‹ Atrás</button>
         <div class="spacer"></div>
         <button id="btn-done" class="btn-apple hidden" onclick="stopJiggle()">Listo</button>
@@ -19,11 +19,7 @@
     </header>
 
     <main id="main-menu" class="view active">
-        <div id="photo-widget" class="widget">
-            <div id="widget-content">
-                <p id="widget-msg">Mantén pulsado para editar y subir fotos</p>
-            </div>
-        </div>
+        <div id="widgets-container"></div>
 
         <div class="app-grid">
             <div class="ios-card" id="card-notes" onclick="openView('view-notes')">
@@ -36,6 +32,15 @@
             </div>
         </div>
     </main>
+
+    <div id="widget-menu" class="modal hidden">
+        <div class="modal-content apple-blur">
+            <h3>Añadir Widget</h3>
+            <div id="available-widgets">
+                </div>
+            <button onclick="closeWidgetMenu()" class="btn-close">Cancelar</button>
+        </div>
+    </div>
 
     <section id="view-notes" class="view">
         <div class="notes-container">

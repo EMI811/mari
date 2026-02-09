@@ -1,98 +1,84 @@
-let jiggleMode = false;
-let timer;
+let currentPage = 0;
+let currentNoteId = null;
 
-// Iniciar Jiggle Mode con Long Press
-document.body.addEventListener('touchstart', (e) => {
-    if (e.target.closest('.ios-card') || e.target.closest('.widget-frame') || e.target.tagName === 'MAIN') {
-        timer = setTimeout(startJiggle, 800);
+// SISTEMA DE SWIPE (Páginas)
+const wrapper = document.getElementById('pages-wrapper');
+const dots = document.querySelectorAll('.dot');
+
+let startX = 0;
+wrapper.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+wrapper.addEventListener('touchend', e => {
+    let diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+        currentPage = diff > 0 ? 1 : 0;
+        updatePage();
     }
 });
-document.body.addEventListener('touchend', () => clearTimeout(timer));
 
-function startJiggle() {
-    jiggleMode = true;
-    document.querySelectorAll('.ios-card, .widget-frame').forEach(el => el.classList.add('jiggling'));
-    document.getElementById('btn-add').classList.remove('hidden');
-    document.getElementById('btn-done').classList.remove('hidden');
-    document.getElementById('btn-settings').classList.add('hidden');
+function updatePage() {
+    wrapper.style.transform = `translateX(-${currentPage * 50}%)`;
+    dots.forEach((d, i) => d.classList.toggle('active', i === currentPage));
 }
 
-function stopJiggle() {
-    jiggleMode = false;
-    document.querySelectorAll('.ios-card, .widget-frame').forEach(el => el.classList.remove('jiggling'));
-    document.getElementById('btn-add').classList.add('hidden');
-    document.getElementById('btn-done').classList.add('hidden');
-    document.getElementById('btn-settings').classList.remove('hidden');
+// NOTIFICACIONES
+function sendNotif(title, msg) {
+    if (!document.getElementById('notif-toggle').checked) return;
+    const banner = document.getElementById('ios-notification');
+    document.getElementById('notif-title').innerText = title;
+    document.getElementById('notif-msg').innerText = msg;
+    banner.classList.remove('hidden');
+    setTimeout(() => banner.classList.add('hidden'), 4000);
 }
 
-// MENU DE WIDGETS
-function showWidgetMenu() {
-    const menu = document.getElementById('widget-menu');
-    const container = document.getElementById('available-widgets');
-    const photos = JSON.parse(localStorage.getItem('nuestras_fotos') || "[]");
-    
-    container.innerHTML = "";
-    menu.classList.remove('hidden');
+function sendTestNotif() { sendNotif("Hola Amor ❤️", "Esta es una notificación real."); }
 
-    if (photos.length > 0) {
-        const formats = [
-            { id: 'w-square', name: 'Widget Cuadrado' },
-            { id: 'w-horizontal', name: 'Widget Panorámico' },
-            { id: 'w-vertical', name: 'Widget Vertical' }
-        ];
-        formats.forEach(f => {
-            container.innerHTML += `
-                <div class="widget-option" onclick="addWidget('${f.id}')">
-                    <span>${f.name}</span> <span style="color:var(--ios-blue)">Añadir</span>
-                </div>`;
-        });
-    } else {
-        container.innerHTML = "<p style='text-align:center; color:#888;'>No tienes fotos guardadas para crear widgets todavía.</p>";
+// SISTEMA DE MÚLTIPLES NOTAS
+function createNewNote() {
+    currentNoteId = Date.now();
+    document.getElementById('notes-editor').value = "";
+    document.getElementById('notes-list-view').classList.add('hidden');
+    document.getElementById('note-editor-view').classList.remove('hidden');
+}
+
+function closeNoteEditor() {
+    const text = document.getElementById('notes-editor').value;
+    if (text.trim() !== "") {
+        let notes = JSON.parse(localStorage.getItem('multi_notes') || "[]");
+        const existingIndex = notes.findIndex(n => n.id === currentNoteId);
+        if (existingIndex > -1) notes[existingIndex].text = text;
+        else notes.push({ id: currentNoteId, text: text, date: new Date().toLocaleDateString() });
+        localStorage.setItem('multi_notes', JSON.stringify(notes));
     }
+    renderNotesList();
+    document.getElementById('notes-list-view').classList.remove('hidden');
+    document.getElementById('note-editor-view').classList.add('hidden');
+    sendNotif("Nota Guardada", "Tus pensamientos están a salvo.");
 }
 
-function closeWidgetMenu() { document.getElementById('widget-menu').classList.add('hidden'); }
-
-function addWidget(type) {
-    const photos = JSON.parse(localStorage.getItem('nuestras_fotos') || "[]");
-    const lastPhoto = photos[photos.length - 1];
-    const widgetData = { type, img: lastPhoto };
-    
-    let activeWidgets = JSON.parse(localStorage.getItem('active_widgets') || "[]");
-    activeWidgets.push(widgetData);
-    localStorage.setItem('active_widgets', JSON.stringify(activeWidgets));
-    
-    renderWidgets();
-    closeWidgetMenu();
-}
-
-function renderWidgets() {
-    const container = document.getElementById('widgets-container');
-    const activeWidgets = JSON.parse(localStorage.getItem('active_widgets') || "[]");
-    container.innerHTML = "";
-
-    activeWidgets.forEach((w, index) => {
+function renderNotesList() {
+    const list = document.getElementById('notes-list');
+    const notes = JSON.parse(localStorage.getItem('multi_notes') || "[]");
+    list.innerHTML = notes.length ? "" : "<p style='text-align:center; color:#888;'>No hay notas aún.</p>";
+    notes.reverse().forEach(n => {
         const div = document.createElement('div');
-        div.className = `widget-frame ${w.type} ${jiggleMode ? 'jiggling' : ''}`;
-        div.innerHTML = `<img src="${w.img}">`;
-        // Eliminar widget si estamos en jiggle mode
+        div.className = 'note-item';
         div.onclick = () => {
-            if(jiggleMode) {
-                activeWidgets.splice(index, 1);
-                localStorage.setItem('active_widgets', JSON.stringify(activeWidgets));
-                renderWidgets();
-            }
+            currentNoteId = n.id;
+            document.getElementById('notes-editor').value = n.text;
+            document.getElementById('notes-list-view').classList.add('hidden');
+            document.getElementById('note-editor-view').classList.remove('hidden');
         };
-        container.appendChild(div);
+        div.innerHTML = `<b>${n.text.substring(0, 25)}...</b><span>${n.date}</span>`;
+        list.appendChild(div);
     });
 }
 
-// Navegación Básica
+// FUNCIONES DE NAVEGACIÓN Y CARGA
 function openView(id) {
-    if (jiggleMode) return;
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     document.getElementById('btn-back').classList.remove('hidden');
+    if (id === 'view-notes') renderNotesList();
 }
 
 function goHome() {
@@ -101,19 +87,4 @@ function goHome() {
     document.getElementById('btn-back').classList.add('hidden');
 }
 
-// Subida de fotos
-document.getElementById('upload-photo').onchange = (e) => {
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-        let photos = JSON.parse(localStorage.getItem('nuestras_fotos') || "[]");
-        photos.push(ev.target.result);
-        localStorage.setItem('nuestras_fotos', JSON.stringify(photos));
-        location.reload(); // Recargar para ver cambios
-    };
-    reader.readAsDataURL(e.target.files[0]);
-};
-
-window.onload = () => {
-    renderWidgets();
-    document.getElementById('notes-editor').value = localStorage.getItem('nota_amor') || "";
-};
+window.onload = () => { renderNotesList(); };

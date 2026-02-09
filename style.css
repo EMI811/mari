@@ -5,56 +5,39 @@
 
 body {
     margin: 0; font-family: -apple-system, sans-serif;
-    background: #f2f2f7; height: 100vh; display: flex; flex-direction: column;
+    background: #f2f2f7; height: 100vh; display: flex; flex-direction: column; overflow: hidden;
 }
 
-.navbar {
-    padding: 60px 20px 10px; display: flex; justify-content: space-between;
-    background: rgba(242, 242, 247, 0.8); backdrop-filter: blur(20px); z-index: 100;
+/* PAGINACIÓN */
+.pages-wrapper {
+    display: flex; flex: 1; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    width: 200%; /* 2 páginas */
 }
+.page { width: 50%; height: 100%; overflow-y: auto; }
+.page-dots { display: flex; justify-content: center; padding-bottom: 20px; gap: 8px; }
+.dot { width: 8px; height: 8px; background: #ccc; border-radius: 50%; }
+.dot.active { background: #333; }
 
-.btn-apple { background: none; border: none; color: var(--ios-blue); font-size: 18px; font-weight: 600; cursor: pointer; }
-.hidden { display: none !important; }
-
-/* WIDGETS DINÁMICOS */
-#widgets-container { padding: 10px 25px; display: flex; flex-direction: column; gap: 15px; }
-
-.widget-frame {
-    background: white; border-radius: 28px; overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    border: 0.5px solid rgba(0,0,0,0.1);
-    transition: transform 0.3s;
+/* NOTIFICACIONES */
+.notif-banner {
+    position: fixed; top: 50px; left: 10px; right: 10px;
+    background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px);
+    border-radius: 20px; padding: 15px; display: flex; gap: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 1000;
+    animation: slideDown 0.5s ease forwards;
 }
+@keyframes slideDown { from { transform: translateY(-150%); } to { transform: translateY(0); } }
 
-.widget-frame img { width: 100%; display: block; object-fit: cover; }
-
-/* Formatos de Widgets */
-.w-square { aspect-ratio: 1/1; width: 100%; }
-.w-horizontal { aspect-ratio: 16/9; width: 100%; }
-.w-vertical { aspect-ratio: 4/5; width: 100%; }
-
-/* ANIMACIÓN JIGGLE */
-@keyframes jiggle {
-    0% { transform: rotate(-1deg); }
-    50% { transform: rotate(1.5deg); }
-    100% { transform: rotate(-1deg); }
+/* NOTAS MULTIPLES */
+.notes-list { padding: 15px; }
+.note-item {
+    background: white; padding: 15px; border-radius: 12px; margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer;
 }
-.jiggling { animation: jiggle 0.3s infinite ease-in-out; }
+.note-item b { display: block; font-size: 16px; margin-bottom: 4px; }
+.note-item span { color: #888; font-size: 13px; }
 
-/* MODAL SELECCIÓN */
-.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.3); display: flex; align-items: flex-end; z-index: 200; }
-.modal-content { 
-    background: rgba(255,255,255,0.9); width: 100%; border-radius: 30px 30px 0 0; 
-    padding: 25px; backdrop-filter: blur(20px);
-}
-.widget-option {
-    padding: 15px; background: white; margin-bottom: 10px; border-radius: 15px;
-    display: flex; justify-content: space-between; align-items: center; font-weight: 500;
-}
-
-.btn-close { width: 100%; padding: 15px; border-radius: 15px; border: none; background: #ddd; margin-top: 10px; font-weight: bold; }
-
-/* RESTO DE LA APP */
-.app-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 25px; }
+/* MANTENEMOS EL ESTILO ANTERIOR DE CARDS Y WIDGETS... */
 .ios-card { background: white; border-radius: 25px; aspect-ratio: 1/1; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-.ios-card .icon { font-size: 45px; }
+.app-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 25px; }
+.hidden { display: none !important; }

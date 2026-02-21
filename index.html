@@ -11,7 +11,7 @@
 <body>
 
     <div id="boot-screen">
-        <div class="boot-logo">❤️</div>
+        <div class="boot-logo">By NeoCorp</div>
     </div>
 
     <div id="app-background"></div>
@@ -92,12 +92,31 @@
     </main>
 
     <section id="view-messages" class="view">
-        <div id="chat-container" class="chat-scroll-area"></div>
-        <div class="keyboard-area glass-panel">
-            <input type="text" id="chat-input" placeholder="iMessage..." autocomplete="off">
-            <button class="btn-send-round" onclick="sendMsg()">↑</button>
+    <div id="chat-container" class="chat-scroll-area"></div>
+    
+    <div id="sticker-panel" class="sticker-panel hidden">
+        <div class="sticker-list">
+            <span onclick="sendSticker('❤️')">❤️</span>
+            <span onclick="sendSticker('💖')">💖</span>
+            <span onclick="sendSticker('😻')">😻</span>
+            <span onclick="sendSticker('🧸')">🧸</span>
+            <span onclick="sendSticker('🌹')">🌹</span>
+            <span onclick="sendSticker('✨')">✨</span>
         </div>
-    </section>
+    </div>
+
+    <div class="keyboard-area glass-panel">
+        <button class="btn-chat-extra" onclick="document.getElementById('chat-file-input').click()">+</button>
+        <button class="btn-chat-extra" onclick="toggleStickers()">😊</button>
+        
+        <input type="file" id="chat-file-input" accept="image/*" hidden onchange="sendImage(this)">
+        
+        <div class="input-wrapper">
+            <input type="text" id="chat-input" placeholder="iMessage" autocomplete="off">
+            <button class="btn-send-round" id="btn-send" onclick="sendMsg()">↑</button>
+        </div>
+    </div>
+</section>
 
     <section id="view-notes" class="view">
         <div id="notes-list-area">

@@ -205,14 +205,82 @@ function borrarTodo() {
     }
 }
 
-// --- CHAT ---
+// --- CHAT PRO ---
+
+function toggleStickers() {
+    document.getElementById('sticker-panel').classList.toggle('hidden');
+}
+
 function sendMsg() {
     const input = document.getElementById('chat-input');
     const txt = input.value.trim();
     if(!txt) return;
-    db.ref('messages').push({ text: txt, sender: currentUser, timestamp: Date.now() });
+    
+    db.ref('messages').push({
+        text: txt,
+        sender: currentUser,
+        type: 'text',
+        timestamp: Date.now()
+    });
     input.value = "";
 }
+
+function sendSticker(emoji) {
+    db.ref('messages').push({
+        text: emoji,
+        sender: currentUser,
+        type: 'sticker',
+        timestamp: Date.now()
+    });
+    toggleStickers();
+}
+
+function sendImage(input) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        db.ref('messages').push({
+            img: e.target.result,
+            sender: currentUser,
+            type: 'image',
+            timestamp: Date.now()
+        });
+    };
+    reader.readAsDataURL(file);
+}
+
+// Listener de Chat Actualizado
+db.ref('messages').limitToLast(50).on('child_added', (sn) => {
+    const m = sn.val();
+    const box = document.getElementById('chat-container');
+    if(!box) return;
+    
+    const isMe = m.sender === currentUser;
+    const time = new Date(m.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    
+    const div = document.createElement('div');
+    div.className = `msg ${isMe ? 'sent' : 'received'} ${m.type === 'sticker' ? 'msg-sticker' : ''}`;
+    
+    let content = "";
+    if(m.type === 'image') {
+        content = `<img src="${m.img}" class="msg-img">`;
+    } else if(m.type === 'sticker') {
+        content = m.text;
+    } else {
+        content = `<b>${isMe ? '' : m.sender + ': '}</b>${m.text}`;
+    }
+
+    div.innerHTML = `${content} <span class="msg-time">${time}</span>`;
+    
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+
+    if(!isMe && !document.getElementById('view-messages').classList.contains('active')) {
+        showBanner(m.sender, m.type === 'image' ? "📷 Foto enviada" : m.text);
+    }
+});
 // Listener Chat
 db.ref('messages').limitToLast(50).on('child_added', (sn) => {
     const m = sn.val();

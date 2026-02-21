@@ -18,7 +18,7 @@
         </div>
     </div>
 
-    <div id="app-background" style="background-image: url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2070&auto=format&fit=crop');"></div>
+    <div id="app-background"></div>
 
     <div class="status-bar">
         <span id="clock-time">00:00</span>
@@ -28,7 +28,8 @@
     <header class="navbar hidden" id="main-navbar">
         <button class="btn-nav" onclick="goHome()">‹ Home</button>
         <span id="navbar-title" class="nav-title">SISTEMA</span>
-        <div style="width: 50px;"></div> </header>
+        <div style="width: 50px;"></div>
+    </header>
 
     <main id="view-home" class="view active">
         <div class="home-header">
@@ -46,57 +47,52 @@
 
         <div class="app-grid">
             <div class="app-icon-container" onclick="openView('view-messages', 'MESSAGES')">
-                <div class="app-icon" style="background: #2ecc71;">💬</div>
-                <span class="app-name">Messages</span>
+                <div class="app-icon green">💬</div><span class="app-name">Messages</span>
             </div>
             <div class="app-icon-container" onclick="openView('view-cloud', 'VAULT')">
-                <div class="app-icon" style="background: #3498db;">📸</div>
-                <span class="app-name">Vault</span>
+                <div class="app-icon blue">📸</div><span class="app-name">Vault</span>
             </div>
             <div class="app-icon-container" onclick="openView('view-notes', 'LOGS')">
-                <div class="app-icon" style="background: #f1c40f;">📝</div>
-                <span class="app-name">Notes</span>
+                <div class="app-icon yellow">📝</div><span class="app-name">Notes</span>
             </div>
             <div class="app-icon-container" onclick="openView('view-settings', 'SYSTEM')">
-                <div class="app-icon" style="background: #95a5a6;">⚙️</div>
-                <span class="app-name">Config</span>
+                <div class="app-icon gray">⚙️</div><span class="app-name">Config</span>
             </div>
         </div>
     </main>
 
     <section id="view-messages" class="view">
         <div id="chat-container" class="chat-scroll-area"></div>
+        <div id="sticker-panel" class="sticker-panel hidden">
+            <div class="sticker-list">
+                <span onclick="sendSticker('⚡')">⚡</span><span onclick="sendSticker('🤍')">🤍</span>
+                <span onclick="sendSticker('🧊')">🧊</span><span onclick="sendSticker('🛰️')">🛰️</span>
+            </div>
+        </div>
         <div class="keyboard-area">
+            <button class="btn-extra" onclick="document.getElementById('chat-file-input').click()">+</button>
+            <input type="file" id="chat-file-input" accept="image/*" hidden onchange="sendImage(this, 'messages')">
             <div class="input-box">
                 <input type="text" id="chat-input" placeholder="NeoMessage...">
                 <button onclick="sendMsg()">↑</button>
             </div>
+            <button class="btn-extra" onclick="toggleStickers()">😊</button>
         </div>
     </section>
 
     <section id="view-cloud" class="view">
-        <div class="gallery-grid" id="gallery">
-            </div>
+        <div class="gallery-grid" id="gallery-container"></div>
         <div class="upload-bar">
-            <input type="file" id="up-file" hidden onchange="uploadPhoto(this)">
-            <button class="btn-ios-primary" onclick="document.getElementById('up-file').click()">Upload to Vault</button>
+            <input type="file" id="vault-file-input" accept="image/*" hidden onchange="sendImage(this, 'vault')">
+            <button class="btn-ios-primary" onclick="document.getElementById('vault-file-input').click()">UPLOAD_PHOTO</button>
         </div>
     </section>
 
     <section id="view-notes" class="view">
-        <div id="notes-list" class="ios-list"></div>
-        <button class="btn-floating" onclick="newNote()">+</button>
-    </section>
-
-    <section id="view-settings" class="view">
-        <div class="ios-group">
-            <div class="ios-item">
-                <span>NeoOne Versión</span>
-                <b>4.0.1 (Stable)</b>
-            </div>
-            <div class="ios-item" onclick="borrarTodo()">
-                <span style="color: #ff3b30;">Formatear Terminal</span>
-            </div>
+        <div id="notes-container" class="ios-list"></div>
+        <div class="note-editor glass-panel">
+            <textarea id="note-input" placeholder="New log entry..."></textarea>
+            <button class="btn-ios-primary" onclick="saveNote()">SAVE_NOTE</button>
         </div>
     </section>
 

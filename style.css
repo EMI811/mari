@@ -59,3 +59,26 @@ body {
 /* IOS LISTS */
 .ios-group { background: var(--glass); margin: 20px; border-radius: 12px; overflow: hidden; }
 .ios-item { padding: 15px; border-bottom: 0.5px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; }
+/* Globos de texto con ajuste de palabra */
+.msg { 
+    word-wrap: break-word; 
+    white-space: pre-wrap; 
+    padding: 12px; 
+    border-radius: 18px; 
+    margin-bottom: 8px; 
+    max-width: 75%; 
+}
+.msg.sent { background: var(--neo-blue); align-self: flex-end; }
+.msg.received { background: #1c1c1e; align-self: flex-start; }
+.msg-img { max-width: 100%; border-radius: 12px; }
+
+/* Galería Vault */
+.gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 5px; }
+.gallery-item { width: 100%; aspect-ratio: 1; object-fit: cover; }
+.upload-bar { padding: 20px; position: sticky; bottom: 0; background: rgba(0,0,0,0.8); }
+
+/* Notas */
+.note-editor { margin: 20px; padding: 15px; }
+.note-editor textarea { width: 100%; background: none; border: none; color: white; height: 100px; outline: none; }
+.ios-item { background: rgba(255,255,255,0.05); padding: 15px; margin-bottom: 1px; display: flex; flex-direction: column; }
+.ios-item small { color: var(--neo-blue); font-size: 10px; margin-top: 5px; }

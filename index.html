@@ -1,103 +1,228 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>NeoOne</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>MyLove OS Ultimate</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="boot-screen">
-        <h1 class="neo-logo">NEO<span>ONE</span></h1>
-    </div>
+    <div id="boot-screen">
+        <div class="boot-logo">❤️</div>
+    </div>
 
-    <div id="app-background"></div>
+    <div id="app-background"></div>
+    <div id="liquid-overlay"></div> <div id="ios-notification" class="notif-banner">
+        <div class="notif-header">
+            <span class="notif-icon">💬</span>
+            <span class="notif-app-name">Mensajes</span>
+            <span class="notif-time">ahora</span>
+        </div>
+        <div class="notif-content">
+            <b id="notif-title">Título</b>
+            <p id="notif-msg">Mensaje de contenido...</p>
+        </div>
+    </div>
 
-    <div class="status-bar">
-        <span id="clock-time">00:00</span>
-        <div class="status-icons">📶 🔋</div>
-    </div>
+    <div id="lightbox" class="hidden">
+        <div class="lightbox-backdrop" onclick="closeLightbox()"></div>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="">
+            <div class="lightbox-toolbar">
+                <button onclick="applyFilter()" class="btn-tool">🎨 Filtro</button>
+                <button onclick="downloadPhoto()" class="btn-tool">⬇️ Guardar</button>
+                <button onclick="deleteCurrentPhoto()" class="btn-tool destruct">🗑️ Eliminar</button>
+                <button onclick="closeLightbox()" class="btn-tool">✖️</button>
+            </div>
+        </div>
+    </div>
 
-    <nav id="top-nav" class="hidden">
-        <button class="nav-back" onclick="goHome()">❮ Atrás</button>
-        <h1 id="nav-title">App</h1>
-        <div id="nav-extra"></div> </nav>
+    <div class="status-bar">
+        <span id="clock-time">12:00</span>
+        <div class="status-icons">
+            <span>📶</span><span>❤️</span><span>🔋</span>
+        </div>
+    </div>
 
-    <main id="view-home" class="view active">
-        <div class="home-header">
-            <h1 id="date-display">...</h1>
-            <h2 id="welcome-text">HOLA</h2>
-        </div>
+    <header class="navbar hidden" id="main-navbar">
+        <button id="btn-back" class="btn-nav" onclick="goHome()">
+            <span class="chevron">‹</span> Atrás
+        </button>
+        <span id="navbar-title" class="nav-title">Inicio</span>
+        <button id="btn-settings" class="btn-nav" onclick="openView('view-settings')">Ajustes</button>
+    </header>
 
-        <div class="widget-container">
-            <span class="widget-tag">TIEMPO TRANSCURRIDO</span>
-            <b id="timer-display">00:00:00</b>
-        </div>
+    <main id="view-home" class="view active">
+        <div class="home-header">
+            <h1 class="date-display" id="date-display">Lunes, 14 de Febrero</h1>
+            <h2 class="welcome-text" id="welcome-text">Hola, Amor</h2>
+        </div>
 
-        <div class="app-grid">
-            <div class="app-item" onclick="openApp('view-chat', 'WhatsApp', 'chat')">
-                <div class="icon-ios" style="background: #25D366;">💬</div>
-                <span>WhatsApp</span>
-            </div>
-            <div class="app-item" onclick="openApp('view-photos', 'Fotos', 'photos')">
-                <div class="icon-ios" style="background: #fff; color: #000;">🖼️</div>
-                <span>Fotos</span>
-            </div>
-            <div class="app-item" onclick="openApp('view-notes', 'Notas', 'notes')">
-                <div class="icon-ios" style="background: #fdf6e3; color: #f39c12;">📝</div>
-                <span>Notas</span>
-            </div>
-            <div class="app-item" onclick="openApp('view-settings', 'Ajustes', 'settings')">
-                <div class="icon-ios" style="background: #8e8e93;">⚙️</div>
-                <span>Ajustes</span>
-            </div>
-        </div>
-    </main>
+        <div class="widget-container glass-panel">
+            <div class="widget-icon">⏳</div>
+            <div class="widget-content">
+                <span class="widget-label">Tiempo Juntos</span>
+                <b id="timer-display">Calculando...</b>
+            </div>
+        </div>
 
-    <section id="view-chat" class="view">
-        <div id="chat-messages" class="chat-body"></div>
-        <div class="chat-input-area">
-            <button class="chat-plus" onclick="document.getElementById('chat-img').click()">+</button>
-            <input type="file" id="chat-img" hidden onchange="uploadMedia(this, 'chat')">
-            <input type="text" id="chat-input" placeholder="Mensaje...">
-            <button class="chat-send" onclick="sendChatMessage()">↑</button>
-        </div>
-    </section>
+        <div class="app-grid" id="app-grid">
+            <div class="app-icon-container" onclick="handleAppClick('view-notes')">
+                <div class="app-icon yellow">📝</div><span class="app-name">Notas</span>
+            </div>
+            <div class="app-icon-container" onclick="handleAppClick('view-cloud')">
+                <div class="app-icon rainbow">📸</div><span class="app-name">Fotos</span>
+            </div>
+            <div class="app-icon-container" onclick="handleAppClick('view-messages')">
+                <div class="app-icon green">💬</div><span class="app-name">Chat</span>
+            </div>
+            <div class="app-icon-container" onclick="handleAppClick('view-map')">
+                <div class="app-icon blue">📍</div><span class="app-name">Ubicación</span>
+            </div>
+            <div class="app-icon-container" onclick="handleAppClick('view-games')">
+                <div class="app-icon red">🎮</div><span class="app-name">Juegos</span>
+            </div>
+            <div class="app-icon-container" onclick="handleAppClick('view-settings')">
+                <div class="app-icon gray">⚙️</div><span class="app-name">Ajustes</span>
+            </div>
+        </div>
+    </main>
 
-    <section id="view-photos" class="view">
-        <div class="photos-header">
-            <h2>Fototeca</h2>
-            <button onclick="document.getElementById('photo-up').click()">Añadir</button>
-        </div>
-        <input type="file" id="photo-up" hidden onchange="uploadMedia(this, 'vault')">
-        <div class="photos-grid" id="photos-container"></div>
-    </section>
+    <section id="view-messages" class="view">
+        <div id="chat-container" class="chat-scroll-area"></div>
+        <div class="keyboard-area glass-panel">
+            <input type="text" id="chat-input" placeholder="iMessage..." autocomplete="off">
+            <button class="btn-send-round" onclick="sendMsg()">↑</button>
+        </div>
+    </section>
 
-    <section id="view-notes" class="view">
-        <div class="notes-wrapper">
-            <div id="notes-list"></div>
-            <textarea id="note-pad" placeholder="Empieza a escribir..."></textarea>
-            <button class="note-save-btn" onclick="saveCurrentNote()">Hecho</button>
-        </div>
-    </section>
+    <section id="view-notes" class="view">
+        <div id="notes-list-area">
+            <div class="ios-list-header">
+                <h3>Todas las notas</h3>
+                <button class="btn-icon" onclick="showEditor()">➕</button>
+            </div>
+            <div id="list-container" class="ios-list"></div>
+        </div>
+        <div id="notes-editor-area" class="hidden">
+            <textarea id="notes-editor" placeholder="Escribe aquí..."></textarea>
+            <button class="btn-full-width" onclick="saveNote()">Guardar Nota</button>
+        </div>
+    </section>
 
-    <section id="view-settings" class="view">
-        <div class="settings-list">
-            <div class="settings-group">
-                <div class="settings-row"><span>Nombre de usuario</span><input type="text" id="set-user" placeholder="Escribe..."></div>
-                <div class="settings-row"><span>NeoOne Versión</span><small>4.5.0</small></div>
-            </div>
-            <div class="settings-group">
-                <div class="settings-row" onclick="borrarTodo()"><span style="color: #ff3b30;">Restablecer</span></div>
-            </div>
-        </div>
-    </section>
+    <section id="view-cloud" class="view">
+        <div class="gallery-header">
+            <span>Álbum Compartido</span>
+            <label class="btn-text">
+                Seleccionar
+                <input type="file" id="up-file" accept="image/*" hidden>
+            </label>
+        </div>
+        <div id="gallery" class="gallery-grid"></div>
+    </section>
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-    <script src="script.js"></script>
+    <section id="view-map" class="view">
+        <div class="map-card glass-panel">
+            <div class="map-icon-large">🗺️</div>
+            <h3>Localizador en tiempo real</h3>
+            <p id="distancia-texto">Tu ubicación está segura.</p>
+            <div class="map-actions">
+                <button class="btn-ios-primary" onclick="compartirUbicacion()">📍 Actualizar mi Ubicación</button>
+                <a id="link-google-maps" href="#" target="_blank" class="btn-ios-secondary hidden">Ver en Google Maps</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="view-games" class="view">
+        <h2 class="view-title">Arcade</h2>
+        <div class="ios-list">
+            <div class="ios-item" onclick="openGame('catch')">
+                <span class="item-icon">🍎</span>
+                <div class="item-body"><b>Catch Love</b><span>Atrapa los corazones</span></div>
+                <span class="chevron">›</span>
+            </div>
+            <div class="ios-item" onclick="openGame('flappy')">
+                <span class="item-icon">🐦</span>
+                <div class="item-body"><b>Flappy Heart</b><span>No toques el suelo</span></div>
+                <span class="chevron">›</span>
+            </div>
+            <div class="ios-item" onclick="openGame('jump')">
+                <span class="item-icon">☁️</span>
+                <div class="item-body"><b>Sky Jump</b><span>Sube lo más alto posible</span></div>
+                <span class="chevron">›</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="view-game-play" class="view">
+        <div class="game-hud glass-panel">
+            <span id="game-title-hud">JUEGO</span>
+            <span id="game-score">0</span>
+        </div>
+        <div id="game-canvas-container">
+            <div id="game-player">❤️</div>
+        </div>
+        <button id="btn-start-game" class="btn-start-overlay">TOCA PARA INICIAR</button>
+    </section>
+
+    <section id="view-settings" class="view">
+        <h2 class="view-title">Configuración</h2>
+        
+        <div class="ios-group">
+            <div class="ios-item" onclick="login()">
+                <div id="user-avatar-setting">👤</div>
+                <div class="item-body">
+                    <b id="setting-name">Invitado</b>
+                    <span>ID de Apple, iCloud y más</span>
+                </div>
+                <span class="chevron">›</span>
+            </div>
+        </div>
+
+        <div class="ios-group-title">PANTALLA Y FONDO</div>
+        <div class="ios-group">
+            <div class="ios-item">
+                <span class="item-icon">💧</span>
+                <div class="item-body"><b>Modo Liquid Glass</b></div>
+                <label class="switch">
+                    <input type="checkbox" id="glass-check" onchange="toggleGlassMode(this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="ios-item">
+                <span class="item-icon">🌫️</span>
+                <div class="item-body"><b>Desenfoque de Fondo</b></div>
+                <label class="switch">
+                    <input type="checkbox" id="blur-check" onchange="toggleBlurMode(this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="ios-item" onclick="document.getElementById('bg-file-input').click()">
+                <span class="item-icon">🖼️</span>
+                <div class="item-body"><b>Cambiar Fondo de Pantalla</b><span>Elige de tu galería</span></div>
+                <input type="file" id="bg-file-input" accept="image/*" hidden onchange="handleWallpaperUpload(this)">
+                <span class="chevron">›</span>
+            </div>
+             <div class="ios-item" onclick="resetWallpaper()">
+                <span class="item-icon">↩️</span>
+                <div class="item-body"><b>Restaurar Fondo Original</b></div>
+            </div>
+        </div>
+
+        <div class="ios-group">
+            <div class="ios-item" onclick="borrarTodo()">
+                <span class="item-icon" style="filter: grayscale(1);">💣</span>
+                <div class="item-body" style="color:red;"><b>Restablecer Todo</b></div>
+            </div>
+        </div>
+        <p class="footer-text">MyLove OS v3.0 Ultimate • Designed with ❤️</p>
+    </section>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

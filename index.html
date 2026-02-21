@@ -3,241 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MyLove OS Ultimate</title>
+    <title>NeoOne</title>
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="NeoOne">
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="boot-screen">
-        <div class="boot-logo">By NeoCorp</div>
+        <div class="boot-content">
+            <h1 class="neo-logo">NEO<span>ONE</span></h1>
+            <div class="loader-bar"></div>
+            <p class="brand-tag">BY NEOCORP.</p>
+        </div>
     </div>
 
     <div id="app-background"></div>
-    <div id="liquid-overlay"></div> <div id="ios-notification" class="notif-banner">
-        <div class="notif-header">
-            <span class="notif-icon">💬</span>
-            <span class="notif-app-name">Mensajes</span>
-            <span class="notif-time">ahora</span>
-        </div>
-        <div class="notif-content">
-            <b id="notif-title">Título</b>
-            <p id="notif-msg">Mensaje de contenido...</p>
-        </div>
-    </div>
-
-    <div id="lightbox" class="hidden">
-        <div class="lightbox-backdrop" onclick="closeLightbox()"></div>
-        <div class="lightbox-content">
-            <img id="lightbox-img" src="">
-            <div class="lightbox-toolbar">
-                <button onclick="applyFilter()" class="btn-tool">🎨 Filtro</button>
-                <button onclick="downloadPhoto()" class="btn-tool">⬇️ Guardar</button>
-                <button onclick="deleteCurrentPhoto()" class="btn-tool destruct">🗑️ Eliminar</button>
-                <button onclick="closeLightbox()" class="btn-tool">✖️</button>
-            </div>
-        </div>
-    </div>
 
     <div class="status-bar">
-        <span id="clock-time">12:00</span>
+        <span id="clock-time">00:00</span>
         <div class="status-icons">
-            <span>📶</span><span>❤️</span><span>🔋</span>
+            <span>📶</span><span>LTE</span><span>🔋</span>
         </div>
     </div>
 
     <header class="navbar hidden" id="main-navbar">
-        <button id="btn-back" class="btn-nav" onclick="goHome()">
-            <span class="chevron">‹</span> Atrás
-        </button>
-        <span id="navbar-title" class="nav-title">Inicio</span>
-        <button id="btn-settings" class="btn-nav" onclick="openView('view-settings')">Ajustes</button>
+        <button id="btn-back" class="btn-nav" onclick="goHome()">‹ Atrás</button>
+        <span id="navbar-title" class="nav-title">NeoOne</span>
+        <button class="btn-nav" onclick="openView('view-settings')">Ajustes</button>
     </header>
 
     <main id="view-home" class="view active">
         <div class="home-header">
-            <h1 class="date-display" id="date-display">Lunes, 14 de Febrero</h1>
-            <h2 class="welcome-text" id="welcome-text">Hola, Amor</h2>
+            <h1 id="date-display">Viernes, 20 de Febrero</h1>
+            <h2 id="welcome-text">SISTEMA ONLINE</h2>
         </div>
 
-        <div class="widget-container glass-panel">
-            <div class="widget-icon">⏳</div>
-            <div class="widget-content">
-                <span class="widget-label">Tiempo Juntos</span>
-                <b id="timer-display">Calculando...</b>
+        <div class="app-grid">
+            <div class="app-icon-container" onclick="openView('view-messages')">
+                <div class="app-icon neo-glass">💬</div>
+                <span class="app-name">Messages</span>
             </div>
-        </div>
-
-        <div class="app-grid" id="app-grid">
-            <div class="app-icon-container" onclick="handleAppClick('view-notes')">
-                <div class="app-icon yellow">📝</div><span class="app-name">Notas</span>
+            <div class="app-icon-container" onclick="openView('view-cloud')">
+                <div class="app-icon neo-glass">📸</div>
+                <span class="app-name">Vault</span>
             </div>
-            <div class="app-icon-container" onclick="handleAppClick('view-cloud')">
-                <div class="app-icon rainbow">📸</div><span class="app-name">Fotos</span>
+            <div class="app-icon-container" onclick="openView('view-notes')">
+                <div class="app-icon neo-glass">📝</div>
+                <span class="app-name">Notes</span>
             </div>
-            <div class="app-icon-container" onclick="handleAppClick('view-messages')">
-                <div class="app-icon green">💬</div><span class="app-name">Chat</span>
-            </div>
-            <div class="app-icon-container" onclick="handleAppClick('view-map')">
-                <div class="app-icon blue">📍</div><span class="app-name">Ubicación</span>
-            </div>
-            <div class="app-icon-container" onclick="handleAppClick('view-games')">
-                <div class="app-icon red">🎮</div><span class="app-name">Juegos</span>
-            </div>
-            <div class="app-icon-container" onclick="handleAppClick('view-settings')">
-                <div class="app-icon gray">⚙️</div><span class="app-name">Ajustes</span>
+            <div class="app-icon-container" onclick="openView('view-settings')">
+                <div class="app-icon neo-glass">⚙️</div>
+                <span class="app-name">Config</span>
             </div>
         </div>
     </main>
 
     <section id="view-messages" class="view">
-    <div id="chat-container" class="chat-scroll-area"></div>
-    
-    <div id="sticker-panel" class="sticker-panel hidden">
-        <div class="sticker-list">
-            <span onclick="sendSticker('❤️')">❤️</span>
-            <span onclick="sendSticker('💖')">💖</span>
-            <span onclick="sendSticker('😻')">😻</span>
-            <span onclick="sendSticker('🧸')">🧸</span>
-            <span onclick="sendSticker('🌹')">🌹</span>
-            <span onclick="sendSticker('✨')">✨</span>
-        </div>
-    </div>
-
-    <div class="keyboard-area glass-panel">
-        <button class="btn-chat-extra" onclick="document.getElementById('chat-file-input').click()">+</button>
-        <button class="btn-chat-extra" onclick="toggleStickers()">😊</button>
+        <div id="chat-container" class="chat-scroll-area"></div>
         
-        <input type="file" id="chat-file-input" accept="image/*" hidden onchange="sendImage(this)">
-        
-        <div class="input-wrapper">
-            <input type="text" id="chat-input" placeholder="iMessage" autocomplete="off">
-            <button class="btn-send-round" id="btn-send" onclick="sendMsg()">↑</button>
-        </div>
-    </div>
-</section>
-
-    <section id="view-notes" class="view">
-        <div id="notes-list-area">
-            <div class="ios-list-header">
-                <h3>Todas las notas</h3>
-                <button class="btn-icon" onclick="showEditor()">➕</button>
-            </div>
-            <div id="list-container" class="ios-list"></div>
-        </div>
-        <div id="notes-editor-area" class="hidden">
-            <textarea id="notes-editor" placeholder="Escribe aquí..."></textarea>
-            <button class="btn-full-width" onclick="saveNote()">Guardar Nota</button>
-        </div>
-    </section>
-
-    <section id="view-cloud" class="view">
-        <div class="gallery-header">
-            <span>Álbum Compartido</span>
-            <label class="btn-text">
-                Seleccionar
-                <input type="file" id="up-file" accept="image/*" hidden>
-            </label>
-        </div>
-        <div id="gallery" class="gallery-grid"></div>
-    </section>
-
-    <section id="view-map" class="view">
-        <div class="map-card glass-panel">
-            <div class="map-icon-large">🗺️</div>
-            <h3>Localizador en tiempo real</h3>
-            <p id="distancia-texto">Tu ubicación está segura.</p>
-            <div class="map-actions">
-                <button class="btn-ios-primary" onclick="compartirUbicacion()">📍 Actualizar mi Ubicación</button>
-                <a id="link-google-maps" href="#" target="_blank" class="btn-ios-secondary hidden">Ver en Google Maps</a>
+        <div id="sticker-panel" class="sticker-panel hidden">
+            <div class="sticker-list">
+                <span onclick="sendSticker('⚡')">⚡</span>
+                <span onclick="sendSticker('🖤')">🖤</span>
+                <span onclick="sendSticker('🧊')">🧊</span>
+                <span onclick="sendSticker('🛰️')">🛰️</span>
             </div>
         </div>
-    </section>
 
-    <section id="view-games" class="view">
-        <h2 class="view-title">Arcade</h2>
-        <div class="ios-list">
-            <div class="ios-item" onclick="openGame('catch')">
-                <span class="item-icon">🍎</span>
-                <div class="item-body"><b>Catch Love</b><span>Atrapa los corazones</span></div>
-                <span class="chevron">›</span>
+        <div class="keyboard-area">
+            <button class="btn-extra" onclick="document.getElementById('chat-file-input').click()">+</button>
+            <input type="file" id="chat-file-input" accept="image/*" hidden onchange="sendImage(this)">
+            <div class="input-box">
+                <input type="text" id="chat-input" placeholder="iMessage" autocomplete="off">
+                <button id="btn-send" onclick="sendMsg()">↑</button>
             </div>
-            <div class="ios-item" onclick="openGame('flappy')">
-                <span class="item-icon">🐦</span>
-                <div class="item-body"><b>Flappy Heart</b><span>No toques el suelo</span></div>
-                <span class="chevron">›</span>
-            </div>
-            <div class="ios-item" onclick="openGame('jump')">
-                <span class="item-icon">☁️</span>
-                <div class="item-body"><b>Sky Jump</b><span>Sube lo más alto posible</span></div>
-                <span class="chevron">›</span>
-            </div>
+            <button class="btn-extra" onclick="toggleStickers()">😊</button>
         </div>
-    </section>
-
-    <section id="view-game-play" class="view">
-        <div class="game-hud glass-panel">
-            <span id="game-title-hud">JUEGO</span>
-            <span id="game-score">0</span>
-        </div>
-        <div id="game-canvas-container">
-            <div id="game-player">❤️</div>
-        </div>
-        <button id="btn-start-game" class="btn-start-overlay">TOCA PARA INICIAR</button>
     </section>
 
     <section id="view-settings" class="view">
-        <h2 class="view-title">Configuración</h2>
-        
-        <div class="ios-group">
-            <div class="ios-item" onclick="login()">
-                <div id="user-avatar-setting">👤</div>
-                <div class="item-body">
-                    <b id="setting-name">Invitado</b>
-                    <span>ID de Apple, iCloud y más</span>
-                </div>
-                <span class="chevron">›</span>
-            </div>
-        </div>
-
-        <div class="ios-group-title">PANTALLA Y FONDO</div>
         <div class="ios-group">
             <div class="ios-item">
-                <span class="item-icon">💧</span>
-                <div class="item-body"><b>Modo Liquid Glass</b></div>
+                <div class="item-body"><b>Modo Oscuro Forzado</b></div>
                 <label class="switch">
-                    <input type="checkbox" id="glass-check" onchange="toggleGlassMode(this.checked)">
+                    <input type="checkbox" checked disabled>
                     <span class="slider"></span>
                 </label>
             </div>
-            <div class="ios-item">
-                <span class="item-icon">🌫️</span>
-                <div class="item-body"><b>Desenfoque de Fondo</b></div>
-                <label class="switch">
-                    <input type="checkbox" id="blur-check" onchange="toggleBlurMode(this.checked)">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="ios-item" onclick="document.getElementById('bg-file-input').click()">
-                <span class="item-icon">🖼️</span>
-                <div class="item-body"><b>Cambiar Fondo de Pantalla</b><span>Elige de tu galería</span></div>
-                <input type="file" id="bg-file-input" accept="image/*" hidden onchange="handleWallpaperUpload(this)">
-                <span class="chevron">›</span>
-            </div>
-             <div class="ios-item" onclick="resetWallpaper()">
-                <span class="item-icon">↩️</span>
-                <div class="item-body"><b>Restaurar Fondo Original</b></div>
-            </div>
-        </div>
-
-        <div class="ios-group">
             <div class="ios-item" onclick="borrarTodo()">
-                <span class="item-icon" style="filter: grayscale(1);">💣</span>
-                <div class="item-body" style="color:red;"><b>Restablecer Todo</b></div>
+                <div class="item-body" style="color:var(--ios-red);"><b>Restablecer Terminal</b></div>
             </div>
         </div>
-        <p class="footer-text">MyLove OS v3.0 Ultimate • Designed with ❤️</p>
     </section>
 
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>

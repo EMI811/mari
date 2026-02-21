@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>NeoOne OS</title>
+    <title>NeoOne</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="style.css">
@@ -11,88 +11,88 @@
 <body>
 
     <div id="boot-screen">
-        <div class="boot-content">
-            <h1 class="neo-logo">NEO<span>ONE</span></h1>
-            <div class="loader-bar"></div>
-            <p class="brand-tag">BY NEOCORP.</p>
-        </div>
+        <h1 class="neo-logo">NEO<span>ONE</span></h1>
     </div>
 
     <div id="app-background"></div>
 
     <div class="status-bar">
         <span id="clock-time">00:00</span>
-        <div class="status-icons">📶 LTE 🔋</div>
+        <div class="status-icons">📶 🔋</div>
     </div>
 
-    <header class="navbar hidden" id="main-navbar">
-        <button class="btn-nav" onclick="goHome()">‹ Home</button>
-        <span id="navbar-title" class="nav-title">SISTEMA</span>
-        <div style="width: 50px;"></div>
-    </header>
+    <nav id="top-nav" class="hidden">
+        <button class="nav-back" onclick="goHome()">❮ Atrás</button>
+        <h1 id="nav-title">App</h1>
+        <div id="nav-extra"></div> </nav>
 
     <main id="view-home" class="view active">
         <div class="home-header">
-            <h1 id="date-display">CARGANDO...</h1>
-            <h2 id="welcome-text">HELLO_USER</h2>
+            <h1 id="date-display">...</h1>
+            <h2 id="welcome-text">HOLA</h2>
         </div>
 
-        <div class="widget-container glass-panel">
-            <div class="widget-icon">📡</div>
-            <div class="widget-content">
-                <span class="widget-label">PROTOCOL: TOGETHER</span>
-                <b id="timer-display">00D 00H 00M 00S</b>
-            </div>
+        <div class="widget-container">
+            <span class="widget-tag">TIEMPO TRANSCURRIDO</span>
+            <b id="timer-display">00:00:00</b>
         </div>
 
         <div class="app-grid">
-            <div class="app-icon-container" onclick="openView('view-messages', 'MESSAGES')">
-                <div class="app-icon green">💬</div><span class="app-name">Messages</span>
+            <div class="app-item" onclick="openApp('view-chat', 'WhatsApp', 'chat')">
+                <div class="icon-ios" style="background: #25D366;">💬</div>
+                <span>WhatsApp</span>
             </div>
-            <div class="app-icon-container" onclick="openView('view-cloud', 'VAULT')">
-                <div class="app-icon blue">📸</div><span class="app-name">Vault</span>
+            <div class="app-item" onclick="openApp('view-photos', 'Fotos', 'photos')">
+                <div class="icon-ios" style="background: #fff; color: #000;">🖼️</div>
+                <span>Fotos</span>
             </div>
-            <div class="app-icon-container" onclick="openView('view-notes', 'LOGS')">
-                <div class="app-icon yellow">📝</div><span class="app-name">Notes</span>
+            <div class="app-item" onclick="openApp('view-notes', 'Notas', 'notes')">
+                <div class="icon-ios" style="background: #fdf6e3; color: #f39c12;">📝</div>
+                <span>Notas</span>
             </div>
-            <div class="app-icon-container" onclick="openView('view-settings', 'SYSTEM')">
-                <div class="app-icon gray">⚙️</div><span class="app-name">Config</span>
+            <div class="app-item" onclick="openApp('view-settings', 'Ajustes', 'settings')">
+                <div class="icon-ios" style="background: #8e8e93;">⚙️</div>
+                <span>Ajustes</span>
             </div>
         </div>
     </main>
 
-    <section id="view-messages" class="view">
-        <div id="chat-container" class="chat-scroll-area"></div>
-        <div id="sticker-panel" class="sticker-panel hidden">
-            <div class="sticker-list">
-                <span onclick="sendSticker('⚡')">⚡</span><span onclick="sendSticker('🤍')">🤍</span>
-                <span onclick="sendSticker('🧊')">🧊</span><span onclick="sendSticker('🛰️')">🛰️</span>
-            </div>
-        </div>
-        <div class="keyboard-area">
-            <button class="btn-extra" onclick="document.getElementById('chat-file-input').click()">+</button>
-            <input type="file" id="chat-file-input" accept="image/*" hidden onchange="sendImage(this, 'messages')">
-            <div class="input-box">
-                <input type="text" id="chat-input" placeholder="NeoMessage...">
-                <button onclick="sendMsg()">↑</button>
-            </div>
-            <button class="btn-extra" onclick="toggleStickers()">😊</button>
+    <section id="view-chat" class="view">
+        <div id="chat-messages" class="chat-body"></div>
+        <div class="chat-input-area">
+            <button class="chat-plus" onclick="document.getElementById('chat-img').click()">+</button>
+            <input type="file" id="chat-img" hidden onchange="uploadMedia(this, 'chat')">
+            <input type="text" id="chat-input" placeholder="Mensaje...">
+            <button class="chat-send" onclick="sendChatMessage()">↑</button>
         </div>
     </section>
 
-    <section id="view-cloud" class="view">
-        <div class="gallery-grid" id="gallery-container"></div>
-        <div class="upload-bar">
-            <input type="file" id="vault-file-input" accept="image/*" hidden onchange="sendImage(this, 'vault')">
-            <button class="btn-ios-primary" onclick="document.getElementById('vault-file-input').click()">UPLOAD_PHOTO</button>
+    <section id="view-photos" class="view">
+        <div class="photos-header">
+            <h2>Fototeca</h2>
+            <button onclick="document.getElementById('photo-up').click()">Añadir</button>
         </div>
+        <input type="file" id="photo-up" hidden onchange="uploadMedia(this, 'vault')">
+        <div class="photos-grid" id="photos-container"></div>
     </section>
 
     <section id="view-notes" class="view">
-        <div id="notes-container" class="ios-list"></div>
-        <div class="note-editor glass-panel">
-            <textarea id="note-input" placeholder="New log entry..."></textarea>
-            <button class="btn-ios-primary" onclick="saveNote()">SAVE_NOTE</button>
+        <div class="notes-wrapper">
+            <div id="notes-list"></div>
+            <textarea id="note-pad" placeholder="Empieza a escribir..."></textarea>
+            <button class="note-save-btn" onclick="saveCurrentNote()">Hecho</button>
+        </div>
+    </section>
+
+    <section id="view-settings" class="view">
+        <div class="settings-list">
+            <div class="settings-group">
+                <div class="settings-row"><span>Nombre de usuario</span><input type="text" id="set-user" placeholder="Escribe..."></div>
+                <div class="settings-row"><span>NeoOne Versión</span><small>4.5.0</small></div>
+            </div>
+            <div class="settings-group">
+                <div class="settings-row" onclick="borrarTodo()"><span style="color: #ff3b30;">Restablecer</span></div>
+            </div>
         </div>
     </section>
 

@@ -1,84 +1,50 @@
 :root {
-    --neo-blue: #0A84FF;
-    --glass: rgba(0, 0, 0, 0.5);
+    --ios-blue: #007AFF;
+    --ios-bg: #f2f2f7;
 }
 
 body {
-    margin: 0; padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #000; color: white;
-    height: 100vh; overflow: hidden;
+    margin: 0; background: #000; color: white;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Serif", serif;
+    overflow: hidden; height: 100vh;
 }
 
 #app-background {
-    position: fixed; inset: 0;
-    background-size: cover; background-position: center;
-    filter: brightness(0.6); z-index: -1;
+    position: fixed; inset: 0; z-index: -1;
+    background: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop') center/cover;
+    filter: brightness(0.7);
 }
 
-/* BOOT */
-#boot-screen {
-    position: fixed; inset: 0; background: #000; z-index: 9999;
-    display: flex; justify-content: center; align-items: center;
-    transition: 0.8s;
+/* NAVBAR FIJA */
+nav {
+    position: fixed; top: 0; width: 100%; height: 88px;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    padding: 0 15px 10px; box-sizing: border-box;
+    background: rgba(20, 20, 20, 0.8); backdrop-filter: blur(20px);
+    z-index: 1000; border-bottom: 0.5px solid #333;
 }
-.neo-logo span { color: var(--neo-blue); font-weight: 800; }
+.nav-back { background: none; border: none; color: var(--ios-blue); font-size: 17px; cursor: pointer; }
+#nav-title { font-size: 17px; font-weight: 600; margin: 0; position: absolute; left: 50%; transform: translateX(-50%); }
 
-/* NAVBAR */
-.status-bar { height: 44px; display: flex; justify-content: space-between; padding: 0 20px; align-items: center; font-size: 14px; font-weight: 600; }
-.navbar { height: 50px; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; background: rgba(0,0,0,0.4); backdrop-filter: blur(15px); }
+/* CHAT (WhatsApp Style) */
+.chat-body { height: calc(100vh - 150px); padding: 100px 15px 80px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+.msg { padding: 8px 14px; border-radius: 18px; max-width: 75%; font-size: 16px; word-wrap: break-word; }
+.msg.sent { align-self: flex-end; background: #056162; color: white; border-bottom-right-radius: 2px; }
+.msg.received { align-self: flex-start; background: #262d31; color: white; border-bottom-left-radius: 2px; }
+
+.chat-input-area {
+    position: fixed; bottom: 0; width: 100%; padding: 10px 15px 30px;
+    background: #121b22; display: flex; gap: 10px; align-items: center;
+}
+.chat-input-area input { flex: 1; background: #2a3942; border: none; padding: 10px; border-radius: 20px; color: white; }
+
+/* FOTOS (iPhone Grid) */
+.photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding-top: 90px; }
+.photos-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+
+/* AJUSTES */
+.settings-list { padding-top: 100px; }
+.settings-group { background: #1c1c1e; margin: 20px 15px; border-radius: 10px; }
+.settings-row { padding: 12px 15px; border-bottom: 0.5px solid #333; display: flex; justify-content: space-between; align-items: center; }
+
 .hidden { display: none !important; }
-
-/* HOME */
-.view { height: calc(100vh - 44px); overflow-y: auto; padding-bottom: 50px; display: none; }
-.view.active { display: block; }
-
-.home-header { text-align: center; padding: 40px 0 20px; }
-.home-header h1 { font-size: 16px; font-weight: 400; opacity: 0.8; }
-.home-header h2 { font-size: 32px; margin-top: 5px; }
-
-.widget-container {
-    margin: 0 20px 30px; padding: 20px;
-    background: var(--glass); border-radius: 20px;
-    display: flex; gap: 15px; align-items: center;
-    border: 1px solid rgba(255,255,255,0.1);
-}
-.widget-label { color: var(--neo-blue); font-size: 10px; letter-spacing: 2px; }
-
-.app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; }
-.app-icon { width: 60px; height: 60px; border-radius: 15px; display: flex; justify-content: center; align-items: center; font-size: 30px; }
-.app-name { display: block; text-align: center; font-size: 11px; margin-top: 5px; opacity: 0.8; }
-
-/* CHAT */
-.chat-scroll-area { height: calc(100vh - 180px); padding: 20px; display: flex; flex-direction: column; gap: 10px; }
-.keyboard-area { position: fixed; bottom: 0; width: 100%; padding: 20px; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
-.input-box { background: #1c1c1e; border-radius: 20px; display: flex; padding: 5px 15px; }
-.input-box input { background: none; border: none; color: white; flex: 1; height: 35px; outline: none; }
-.input-box button { background: var(--neo-blue); border: none; color: white; border-radius: 50%; width: 30px; height: 30px; margin-top: 2px; }
-
-/* IOS LISTS */
-.ios-group { background: var(--glass); margin: 20px; border-radius: 12px; overflow: hidden; }
-.ios-item { padding: 15px; border-bottom: 0.5px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; }
-/* Globos de texto con ajuste de palabra */
-.msg { 
-    word-wrap: break-word; 
-    white-space: pre-wrap; 
-    padding: 12px; 
-    border-radius: 18px; 
-    margin-bottom: 8px; 
-    max-width: 75%; 
-}
-.msg.sent { background: var(--neo-blue); align-self: flex-end; }
-.msg.received { background: #1c1c1e; align-self: flex-start; }
-.msg-img { max-width: 100%; border-radius: 12px; }
-
-/* Galería Vault */
-.gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; padding: 5px; }
-.gallery-item { width: 100%; aspect-ratio: 1; object-fit: cover; }
-.upload-bar { padding: 20px; position: sticky; bottom: 0; background: rgba(0,0,0,0.8); }
-
-/* Notas */
-.note-editor { margin: 20px; padding: 15px; }
-.note-editor textarea { width: 100%; background: none; border: none; color: white; height: 100px; outline: none; }
-.ios-item { background: rgba(255,255,255,0.05); padding: 15px; margin-bottom: 1px; display: flex; flex-direction: column; }
-.ios-item small { color: var(--neo-blue); font-size: 10px; margin-top: 5px; }

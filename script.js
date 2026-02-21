@@ -1,87 +1,61 @@
-// CONFIGURACIÓN FIREBASE (Usa la tuya siempre)
+// CONFIG FIREBASE
 const firebaseConfig = {
     apiKey: "AIzaSyCRjtVHymOKWp_n13G4xkYpr8_pUTHaMgc",
-    authDomain: "nuestraapp-97318.firebaseapp.com",
     databaseURL: "https://nuestraapp-97318-default-rtdb.firebaseio.com/",
-    projectId: "nuestraapp-97318",
-    storageBucket: "nuestraapp-97318.firebasestorage.app",
-    messagingSenderId: "834055152460",
-    appId: "1:834055152460:web:19649783347887502025e9"
 };
-if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-let currentUser = localStorage.getItem('user_name') || "NEO_USER";
+const currentUser = "NEO_USER"; // Puedes cambiarlo por un prompt de nombre
 
+// BOOT
 window.onload = () => {
     setTimeout(() => {
         document.getElementById('boot-screen').style.opacity = '0';
-        setTimeout(() => document.getElementById('boot-screen').classList.add('hidden'), 1000);
-    }, 2500);
-    updateClock();
-    setInterval(updateClock, 1000);
+        setTimeout(() => document.getElementById('boot-screen').classList.add('hidden'), 800);
+    }, 2000);
+    setInterval(updateSystem, 1000);
 };
 
-// RELOJ Y TIMER
-function updateClock() {
+function updateSystem() {
     const now = new Date();
-    
-    // --- RELOJ DE LA BARRA DE ESTADO ---
     document.getElementById('clock-time').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    
-    // --- FECHA DEL HOME ---
-    const options = { weekday: 'long', month: 'long', day: 'numeric' };
-    document.getElementById('date-display').innerText = now.toLocaleDateString('es-ES', options).toUpperCase();
+    document.getElementById('date-display').innerText = now.toLocaleDateString('es-ES', {weekday: 'long', day: 'numeric', month: 'long'}).toUpperCase();
 
-    // --- CONTADOR DE TIEMPO JUNTOS (MODIFICA TU FECHA AQUÍ) ---
-    // Formato: Año, Mes (0-11), Día, Hora, Minuto
-    // Nota: Enero es 0, Febrero es 1, etc. 
-    const fechaInicio = new Date(2025, 10, 21, 15, 37); // Ejemplo: 21 de Noviembre de 2023, 8:00 PM
-    
-    const diff = now - fechaInicio;
-
-    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const segundos = Math.floor((diff % (1000 * 60)) / 1000);
-
-    // Formato de salida NeoOne
-    document.getElementById('timer-display').innerText = `${dias}D ${horas}H ${minutos}M ${segundos}S`;
+    // Contador (Ajusta tu fecha aquí)
+    const start = new Date(2023, 10, 21); 
+    const diff = now - start;
+    const d = Math.floor(diff / (1000*60*60*24));
+    const h = Math.floor((diff/(1000*60*60))%24);
+    const m = Math.floor((diff/(1000*60))%60);
+    const s = Math.floor((diff/1000)%60);
+    document.getElementById('timer-display').innerText = `${d}D ${h}H ${m}M ${s}S`;
 }
 
-// NAVEGACIÓN
-function openView(id) {
+function openView(id, title) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById(id).classList.add('active');
-    const nav = document.getElementById('main-navbar');
-    id === 'view-home' ? nav.classList.add('hidden') : nav.classList.remove('hidden');
-    document.getElementById('navbar-title').innerText = id.replace('view-', '').toUpperCase();
+    document.getElementById('main-navbar').classList.remove('hidden');
+    document.getElementById('navbar-title').innerText = title;
+    if(id === 'view-home') document.getElementById('main-navbar').classList.add('hidden');
 }
+
 function goHome() { openView('view-home'); }
 
-// --- CHAT LOGIC ---
+// CHAT SIMPLE QUE SI SIRVE
 function sendMsg() {
     const input = document.getElementById('chat-input');
     if(!input.value.trim()) return;
-    db.ref('messages').push({ text: input.value, sender: currentUser, type: 'text', timestamp: Date.now() });
+    db.ref('messages').push({ text: input.value, sender: currentUser, time: Date.now() });
     input.value = "";
 }
 
-db.ref('messages').limitToLast(30).on('child_added', (sn) => {
-    const m = sn.val();
+db.ref('messages').limitToLast(20).on('child_added', (snap) => {
+    const m = snap.val();
     const box = document.getElementById('chat-container');
-    const isMe = m.sender === currentUser;
     const div = document.createElement('div');
-    div.className = `msg ${isMe ? 'sent' : 'received'}`;
-    
-    if(m.type === 'image') div.innerHTML = `<img src="${m.img}" class="msg-img">`;
-    else if(m.type === 'sticker') div.style.fontSize = "50px", div.style.background = "none", div.innerText = m.text;
-    else div.innerHTML = m.text;
-    
+    div.style = `padding: 10px 15px; border-radius: 15px; margin-bottom: 5px; max-width: 80%; ${m.sender === currentUser ? 'background: #007aff; align-self: flex-end;' : 'background: #3a3a3c; align-self: flex-start;'}`;
+    div.innerText = m.text;
     box.appendChild(div);
     box.scrollTop = box.scrollHeight;
 });
-
-// --- EL RESTO DE TUS FUNCIONES (Notas, Ubicación, etc.) ---
-// Aquí puedes pegar tus funciones de saveNote(), compartirUbicacion() y el motor de juegos que ya tenías. 
-// He dejado la estructura preparada para que funcionen con los nuevos IDs.

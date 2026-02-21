@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>NeoOne</title>
+    <title>NeoOne OS</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="style.css">
@@ -18,147 +18,86 @@
         </div>
     </div>
 
-    <div id="app-background"></div>
-    <div id="liquid-overlay"></div>
-
-    <div id="ios-notification" class="notif-banner">
-        <div class="notif-header">
-            <span class="notif-app-name">NEO_MESSAGE</span>
-            <span class="notif-time">now</span>
-        </div>
-        <div class="notif-content">
-            <b id="notif-title">NeoCorp</b>
-            <p id="notif-msg">System initialized...</p>
-        </div>
-    </div>
+    <div id="app-background" style="background-image: url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2070&auto=format&fit=crop');"></div>
 
     <div class="status-bar">
         <span id="clock-time">00:00</span>
-        <div class="status-icons">
-            <span>📶</span><span>LTE</span><span>🔋</span>
-        </div>
+        <div class="status-icons">📶 LTE 🔋</div>
     </div>
 
     <header class="navbar hidden" id="main-navbar">
         <button class="btn-nav" onclick="goHome()">‹ Home</button>
-        <span id="navbar-title" class="nav-title">NeoOne</span>
-        <button class="btn-nav" onclick="openView('view-settings')">System</button>
-    </header>
+        <span id="navbar-title" class="nav-title">SISTEMA</span>
+        <div style="width: 50px;"></div> </header>
 
-<main id="view-home" class="view active">
-    <div class="home-header">            
-        <h1 id="date-display">LOADING...</h1>
-        <h2 id="welcome-text">HELLO_USER</h2>
-    </div>
-
-    <div class="widget-container glass-panel">
-        <div class="widget-icon">📡</div>
-        <div class="widget-content">
-            <span class="widget-label">PROTOCOL: TOGETHER</span>
-            <b id="timer-display">CALCULATING...</b>
+    <main id="view-home" class="view active">
+        <div class="home-header">
+            <h1 id="date-display">CARGANDO...</h1>
+            <h2 id="welcome-text">HELLO_USER</h2>
         </div>
-    </div>
-
-    <div class="app-grid">
-        </div>
-</main>
 
         <div class="widget-container glass-panel">
             <div class="widget-icon">📡</div>
             <div class="widget-content">
-                <span class="widget-label">Uptime together</span>
-                <b id="timer-display">Initializing...</b>
+                <span class="widget-label">PROTOCOL: TOGETHER</span>
+                <b id="timer-display">00D 00H 00M 00S</b>
             </div>
         </div>
 
         <div class="app-grid">
-            <div class="app-icon-container" onclick="openView('view-messages')">
-                <div class="app-icon green">💬</div><span class="app-name">Messages</span>
+            <div class="app-icon-container" onclick="openView('view-messages', 'MESSAGES')">
+                <div class="app-icon" style="background: #2ecc71;">💬</div>
+                <span class="app-name">Messages</span>
             </div>
-            <div class="app-icon-container" onclick="openView('view-cloud')">
-                <div class="app-icon rainbow">📸</div><span class="app-name">Vault</span>
+            <div class="app-icon-container" onclick="openView('view-cloud', 'VAULT')">
+                <div class="app-icon" style="background: #3498db;">📸</div>
+                <span class="app-name">Vault</span>
             </div>
-            <div class="app-icon-container" onclick="openView('view-notes')">
-                <div class="app-icon yellow">📝</div><span class="app-name">Notes</span>
+            <div class="app-icon-container" onclick="openView('view-notes', 'LOGS')">
+                <div class="app-icon" style="background: #f1c40f;">📝</div>
+                <span class="app-name">Notes</span>
             </div>
-            <div class="app-icon-container" onclick="openView('view-map')">
-                <div class="app-icon blue">📍</div><span class="app-name">Nodes</span>
-            </div>
-            <div class="app-icon-container" onclick="openView('view-games')">
-                <div class="app-icon red">🎮</div><span class="app-name">Arcade</span>
-            </div>
-            <div class="app-icon-container" onclick="openView('view-settings')">
-                <div class="app-icon gray">⚙️</div><span class="app-name">Config</span>
+            <div class="app-icon-container" onclick="openView('view-settings', 'SYSTEM')">
+                <div class="app-icon" style="background: #95a5a6;">⚙️</div>
+                <span class="app-name">Config</span>
             </div>
         </div>
     </main>
 
     <section id="view-messages" class="view">
         <div id="chat-container" class="chat-scroll-area"></div>
-        <div id="sticker-panel" class="sticker-panel hidden">
-            <div class="sticker-list">
-                <span onclick="sendSticker('⚡')">⚡</span>
-                <span onclick="sendSticker('🖤')">🖤</span>
-                <span onclick="sendSticker('🧊')">🧊</span>
-                <span onclick="sendSticker('🛰️')">🛰️</span>
-            </div>
-        </div>
         <div class="keyboard-area">
-            <button class="btn-extra" onclick="document.getElementById('chat-file-input').click()">+</button>
-            <input type="file" id="chat-file-input" accept="image/*" hidden onchange="sendImage(this)">
             <div class="input-box">
-                <input type="text" id="chat-input" placeholder="NeoMessage" autocomplete="off">
-                <button id="btn-send" onclick="sendMsg()">↑</button>
+                <input type="text" id="chat-input" placeholder="NeoMessage...">
+                <button onclick="sendMsg()">↑</button>
             </div>
-            <button class="btn-extra" onclick="toggleStickers()">😊</button>
-        </div>
-    </section>
-
-    <section id="view-notes" class="view">
-        <div id="notes-list-area">
-            <div class="ios-list-header"><h3>Secure Notes</h3><button onclick="showEditor()">➕</button></div>
-            <div id="list-container" class="ios-list"></div>
-        </div>
-        <div id="notes-editor-area" class="hidden">
-            <textarea id="notes-editor" placeholder="Write logs..."></textarea>
-            <button class="btn-full-width" onclick="saveNote()">Save to Cloud</button>
         </div>
     </section>
 
     <section id="view-cloud" class="view">
-        <div class="gallery-header"><span>Media Vault</span><input type="file" id="up-file" accept="image/*" hidden><label for="up-file" class="btn-text">Upload</label></div>
-        <div id="gallery" class="gallery-grid"></div>
-    </section>
-
-    <section id="view-map" class="view">
-        <div class="map-card glass-panel">
-            <h3>Neural Location</h3>
-            <p id="distancia-texto">Waiting for signal...</p>
-            <button class="btn-ios-primary" onclick="compartirUbicacion()">Update Pulse</button>
-            <a id="link-google-maps" href="#" target="_blank" class="btn-ios-secondary hidden">External Map</a>
+        <div class="gallery-grid" id="gallery">
+            </div>
+        <div class="upload-bar">
+            <input type="file" id="up-file" hidden onchange="uploadPhoto(this)">
+            <button class="btn-ios-primary" onclick="document.getElementById('up-file').click()">Upload to Vault</button>
         </div>
     </section>
 
-    <section id="view-games" class="view">
-        <h2 class="view-title">NeoArcade</h2>
-        <div class="ios-list">
-            <div class="ios-item" onclick="openGame('catch')"><b>Catch Pulse</b></div>
-            <div class="ios-item" onclick="openGame('flappy')"><b>Heart Protocol</b></div>
-        </div>
-    </section>
-
-    <section id="view-game-play" class="view">
-        <div class="game-hud"><span>SCORE:</span><span id="game-score">0</span></div>
-        <div id="game-canvas-container"><div id="game-player">❤️</div></div>
-        <button id="btn-start-game" class="btn-start-overlay">BOOT GAME</button>
+    <section id="view-notes" class="view">
+        <div id="notes-list" class="ios-list"></div>
+        <button class="btn-floating" onclick="newNote()">+</button>
     </section>
 
     <section id="view-settings" class="view">
         <div class="ios-group">
-            <div class="ios-item" onclick="login()"><b>Change Alias</b></div>
-            <div class="ios-item" onclick="borrarTodo()"><b style="color:red;">Format Drive</b></div>
+            <div class="ios-item">
+                <span>NeoOne Versión</span>
+                <b>4.0.1 (Stable)</b>
+            </div>
+            <div class="ios-item" onclick="borrarTodo()">
+                <span style="color: #ff3b30;">Formatear Terminal</span>
+            </div>
         </div>
-        <p class="footer-text">NeoOne OS v4.0 • NeoCorp Industries</p>
     </section>
 
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>

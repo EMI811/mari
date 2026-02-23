@@ -205,32 +205,99 @@ function borrarTodo() {
     }
 }
 
-// --- CHAT ---
-function sendMsg() {
-    const input = document.getElementById('chat-input');
-    const txt = input.value.trim();
-    if(!txt) return;
-    db.ref('messages').push({ text: txt, sender: currentUser, timestamp: Date.now() });
-    input.value = "";
-}
-// Listener Chat
-db.ref('messages').limitToLast(50).on('child_added', (sn) => {
-    const m = sn.val();
-    const box = document.getElementById('chat-container');
-    if(!box) return;
-    
-    const isMe = m.sender === currentUser;
-    const div = document.createElement('div');
-    div.className = `msg ${isMe ? 'sent' : 'received'}`;
-    div.innerHTML = `<b>${isMe ? '' : m.sender + ': '}</b>${m.text}`;
-    box.appendChild(div);
-    box.scrollTop = box.scrollHeight;
+let replyingTo = null; // Variable para saber a qué mensaje respondemos
+const recorder = new MicRecorder({ bitRate: 128 });
 
-    if(!isMe && !document.getElementById('view-messages').classList.contains('active')) {
-        showBanner(m.sender, m.text);
-    }
+// --- RESPONDER MENSAJE ---
+function setReply(text, sender) {
+    replyingTo = { text, sender };
+    const bar = document.getElementById('reply-bar') || createReplyBar();
+    bar.innerHTML = `<span>Replying to: <b>${sender}</b><br>${text.substring(0,20)}...</span><button onclick="cancelReply()">✕</button>`;
+    bar.classList.remove('hidden');
+}
+
+function cancelReply() {
+    replyingTo = null;
+    document.getElementById('reply-bar').classList.add('hidden');
+}
+
+// --- ENVIAR MENSAJE (CUALQUIER TIPO) ---
+function sendMsg(customData = null) {
+    const input = document.getElementById('chat-input');
+    const msgData = customData || {
+        text: input.value,
+        type: 'text'
+    };
+
+    if(!msgData.text && !msgData.img && !msgData.audio) return;
+
+    db.ref('messages').push({
+        ...msgData,
+        sender: currentUser,
+        reply: replyingTo,
+        timestamp: Date.now(),
+        seen: false
+    });
+
+    input.value = "";
+    cancelReply();
+}
+
+// --- LISTENER DE CHAT MEJORADO (Evita el "undefined") ---
+db.ref('messages').on('child_added', (sn) => {
+    const m = sn.val();
+    const box = document.getElementById('chat-container');
+    if(!box) return;
+
+    const isMe = m.sender === currentUser;
+    const div = document.createElement('div');
+    div.className = `msg ${isMe ? 'sent' : 'received'} ${m.type === 'sticker' ? 'sticker' : ''}`;
+
+    // 1. ¿Es una respuesta?
+    let replyHTML = m.reply ? `<div class="reply-preview"><b>${m.reply.sender}</b>: ${m.reply.text}</div>` : '';
+
+    // 2. ¿Qué contenido tiene?
+    let contentHTML = "";
+    if(m.type === 'image' || m.img) contentHTML = `<img src="${m.img}" class="chat-img">`;
+    else if(m.type === 'audio') contentHTML = `<audio controls src="${m.audio}"></audio>`;
+    else contentHTML = m.text;
+
+    // 3. Montar mensaje
+    const time = new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    div.innerHTML = `${replyHTML}${contentHTML}<div class="msg-info">${time} ${isMe ? (m.seen ? '✓✓' : '✓') : ''}</div>`;
+    
+    // Al hacer click, permitir responder
+    div.onclick = () => setReply(m.text || "Foto", m.sender);
+
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+
+    // Marcar como visto si yo no lo envié
+    if(!isMe) db.ref('messages/' + sn.key).update({ seen: true });
 });
 
+// --- NOTAS DE VOZ ---
+function startVoice() {
+    recorder.start().then(() => {
+        document.getElementById('record-btn').innerText = "🔴 Grabando...";
+    });
+}
+
+function stopVoice() {
+    recorder.stop().getMp3().then(([buffer, blob]) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            sendMsg({ audio: e.target.result, type: 'audio', text: 'Nota de voz' });
+            document.getElementById('record-btn').innerText = "🎤 Nota de Voz";
+        };
+        reader.readAsDataURL(blob);
+    });
+}
+
+// --- STICKERS ---
+function sendSticker(emoji) {
+    sendMsg({ text: emoji, type: 'sticker' });
+}
 // --- NOTAS ---
 function showEditor() {
     document.getElementById('notes-list-area').classList.add('hidden');

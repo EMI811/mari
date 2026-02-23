@@ -248,3 +248,23 @@ input:checked + .slider:before { transform: translateX(20px); }
     display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
     padding: 15px; background: #f2f2f7; position: absolute; bottom: 70px; width: 100%;
 }
+/* Burbuja de Respuesta */
+.reply-preview {
+    background: rgba(0,0,0,0.05);
+    border-left: 3px solid var(--ios-blue);
+    padding: 5px; margin-bottom: 5px; border-radius: 5px; font-size: 12px;
+}
+
+/* Fotos en el chat */
+.chat-img {
+    max-width: 100%; border-radius: 10px; margin-top: 5px;
+}
+
+/* Sticker Gigante */
+.msg.sticker { background: none !important; font-size: 50px; }
+
+/* Barra de Respuesta sobre el Teclado */
+#reply-bar {
+    background: #e5e5ea; padding: 5px 15px; display: flex; 
+    justify-content: space-between; font-size: 12px; border-top-left-radius: 15px; border-top-right-radius: 15px;
+}

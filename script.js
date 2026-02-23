@@ -565,3 +565,72 @@ function showBanner(title, msg) {
         b.classList.remove('active');
     }, 4000);
 }
+// --- SISTEMA DE PRESENCIA Y VISTO ---
+function updatePresence(status) {
+    db.ref('status/' + currentUser).set({
+        state: status,
+        last_changed: Date.now()
+    });
+}
+
+// Detectar cuando el usuario entra al chat
+db.ref('status').on('value', snap => {
+    const data = snap.val();
+    for (let user in data) {
+        if (user !== currentUser) {
+            const statusEl = document.getElementById('other-user-status');
+            const isOnline = (Date.now() - data[user].last_changed) < 10000;
+            statusEl.innerText = isOnline ? "En línea" : "Desconectado";
+            statusEl.style.color = isOnline ? "#34C759" : "#8E8E93";
+        }
+    }
+});
+
+// --- MENSAJES MULTIMEDIA ---
+function toggleExtraMenu() { document.getElementById('chat-extra-menu').classList.toggle('hidden'); }
+
+function sendSticker(emoji) {
+    db.ref('messages').push({ text: emoji, sender: currentUser, type: 'sticker', timestamp: Date.now() });
+    document.getElementById('sticker-panel').classList.add('hidden');
+    toggleExtraMenu();
+}
+
+function sendMedia(input) {
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        db.ref('messages').push({ img: e.target.result, sender: currentUser, type: 'image', timestamp: Date.now() });
+    };
+    reader.readAsDataURL(file);
+    toggleExtraMenu();
+}
+
+// --- NOTIFICACIONES REALES (PWA) ---
+// Esta función lanza la notificación nativa si el navegador lo permite
+function triggerNotification(title, body) {
+    if (Notification.permission === "granted") {
+        new Notification(title, { body: body, icon: "❤️" });
+    } else {
+        // Si no hay permiso, usamos tu banner de iOS
+        showBanner(title, body);
+    }
+}
+
+// --- ACTUALIZACIÓN DEL LISTENER DE CHAT ---
+db.ref('messages').limitToLast(1).on('child_added', (sn) => {
+    const m = sn.val();
+    if (m.sender !== currentUser) {
+        triggerNotification(m.sender, m.type === 'image' ? "📷 Foto" : m.text);
+        // Marcar como visto en la DB
+        db.ref('messages/' + sn.key).update({ seen: true });
+    }
+});
+
+// Modificar el renderizado de mensajes para mostrar hora y visto
+// (Dentro de tu listener de chat existente, añade esto):
+function renderMessage(m) {
+    const time = new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    const seenIcon = m.seen ? "✔️✔️" : "✔️";
+    // ... lógica de creación de div ...
+    div.innerHTML += `<div class="msg-info">${time} ${m.sender === currentUser ? seenIcon : ''}</div>`;
+}

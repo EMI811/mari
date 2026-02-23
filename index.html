@@ -16,11 +16,6 @@
 
     <div id="app-background"></div>
     <div id="liquid-overlay"></div> <div id="ios-notification" class="notif-banner">
-        <div class="notif-header">
-            <span class="notif-icon">💬</span>
-            <span class="notif-app-name">Mensajes</span>
-            <span class="notif-time">ahora</span>
-        </div>
         <div class="notif-content">
             <b id="notif-title">Título</b>
             <p id="notif-msg">Mensaje de contenido...</p>
@@ -91,13 +86,31 @@
         </div>
     </main>
 
-    <section id="view-messages" class="view">
-        <div id="chat-container" class="chat-scroll-area"></div>
-        <div class="keyboard-area glass-panel">
-            <input type="text" id="chat-input" placeholder="iMessage..." autocomplete="off">
-            <button class="btn-send-round" onclick="sendMsg()">↑</button>
-        </div>
-    </section>
+<section id="view-messages" class="view">
+    <div class="chat-status-bar">
+        <span id="other-user-status">Desconectado</span>
+    </div>
+    
+    <div id="chat-container" class="chat-scroll-area"></div>
+    
+    <div id="chat-extra-menu" class="chat-extra-menu hidden">
+        <button onclick="document.getElementById('chat-file').click()">🖼️ Foto/Archivo</button>
+        <button onclick="toggleStickers()">😊 Stickers</button>
+        <button id="record-btn" onmousedown="startVoice()" onmouseup="stopVoice()">🎤 Nota de Voz</button>
+    </div>
+
+    <div class="keyboard-area glass-panel">
+        <button class="btn-plus" onclick="toggleExtraMenu()">+</button>
+        <input type="file" id="chat-file" hidden onchange="sendMedia(this)">
+        <input type="text" id="chat-input" placeholder="iMessage..." autocomplete="off">
+        <button class="btn-send-round" onclick="sendMsg()">↑</button>
+    </div>
+    
+    <div id="sticker-panel" class="sticker-panel hidden">
+        <span onclick="sendSticker('⚡')">⚡</span><span onclick="sendSticker('💖')">💖</span>
+        <span onclick="sendSticker('🐱')">🐱</span><span onclick="sendSticker('🔥')">🔥</span>
+    </div>
+</section>
 
     <section id="view-notes" class="view">
         <div id="notes-list-area">

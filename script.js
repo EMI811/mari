@@ -724,3 +724,41 @@ chatContainer.addEventListener('scroll', () => {
         btn.classList.add('hidden');
     }
 });
+function requestNotificationPermission() {
+    if (!("Notification" in window)) {
+        alert("Este navegador no soporta notificaciones de escritorio");
+        return;
+    }
+
+    Notification.requestPermission().then(permission => {
+        const statusEl = document.getElementById('notif-status');
+        
+        if (permission === "granted") {
+            statusEl.innerText = "Estado: Activado ✅";
+            statusEl.style.color = "var(--ios-green)";
+            
+            // Notificación de prueba estilo NeoOne
+            new Notification("NeoOne", {
+                body: "¡Notificaciones activadas correctamente! ❤️",
+                icon: "https://cdn-icons-png.flaticon.com/512/2589/2589175.png" // O tu logo
+            });
+        } else if (permission === "denied") {
+            statusEl.innerText = "Estado: Bloqueado ❌";
+            statusEl.style.color = "var(--ios-red)";
+            alert("Has bloqueado las notificaciones. Actívalas en los ajustes de tu navegador.");
+        }
+    });
+}
+
+// Opcional: Revisar el estado al cargar la app
+window.addEventListener('load', () => {
+    const statusEl = document.getElementById('notif-status');
+    if (statusEl) {
+        if (Notification.permission === "granted") {
+            statusEl.innerText = "Estado: Activado ✅";
+            statusEl.style.color = "var(--ios-green)";
+        } else if (Notification.permission === "denied") {
+            statusEl.innerText = "Estado: Bloqueado ❌";
+        }
+    }
+});

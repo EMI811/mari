@@ -268,3 +268,33 @@ input:checked + .slider:before { transform: translateX(20px); }
     background: #e5e5ea; padding: 5px 15px; display: flex; 
     justify-content: space-between; font-size: 12px; border-top-left-radius: 15px; border-top-right-radius: 15px;
 }
+.scroll-bottom-btn {
+    position: absolute;
+    bottom: 90px; /* Justo arriba del teclado */
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border: 0.5px solid rgba(0, 0, 0, 0.1);
+    color: var(--ios-blue);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 99;
+    cursor: pointer;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.scroll-bottom-btn:active {
+    transform: scale(0.9);
+}
+
+.scroll-bottom-btn.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+}

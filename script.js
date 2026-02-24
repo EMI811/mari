@@ -701,3 +701,26 @@ function renderMessage(m) {
     // ... lógica de creación de div ...
     div.innerHTML += `<div class="msg-info">${time} ${m.sender === currentUser ? seenIcon : ''}</div>`;
 }
+// Función para bajar al final del chat
+function scrollToBottom() {
+    const box = document.getElementById('chat-container');
+    box.scrollTo({
+        top: box.scrollHeight,
+        behavior: 'smooth' // Bajada suave
+    });
+}
+
+// Detectar el scroll para mostrar/ocultar el botón
+const chatContainer = document.getElementById('chat-container');
+chatContainer.addEventListener('scroll', () => {
+    const btn = document.getElementById('scroll-bottom-btn');
+    
+    // Si estamos a más de 300px del fondo, mostrar el botón
+    const distanceFromBottom = chatContainer.scrollHeight - chatContainer.scrollTop - chatContainer.clientHeight;
+    
+    if (distanceFromBottom > 300) {
+        btn.classList.remove('hidden');
+    } else {
+        btn.classList.add('hidden');
+    }
+});

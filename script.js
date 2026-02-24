@@ -244,37 +244,69 @@ function sendMsg(customData = null) {
 }
 
 // --- LISTENER DE CHAT MEJORADO (Evita el "undefined") ---
+let lastDisplayedDate = null; // 1. Pon esta variable afuera, arriba del todo
+
 db.ref('messages').on('child_added', (sn) => {
     const m = sn.val();
     const box = document.getElementById('chat-container');
     if(!box) return;
 
+    // --- 2. Lógica de Separador de Fechas ---
+    const dateString = getFriendlyDate(m.timestamp);
+    if (dateString !== lastDisplayedDate) {
+        const dateSeparator = document.createElement('div');
+        dateSeparator.className = 'date-separator';
+        dateSeparator.innerText = dateString;
+        box.appendChild(dateSeparator);
+        lastDisplayedDate = dateString;
+    }
+
+    // --- 3. Crear la burbuja del mensaje (tu código existente mejorado) ---
     const isMe = m.sender === currentUser;
     const div = document.createElement('div');
+    // Agregamos clases según el tipo para que no salga "undefined"
     div.className = `msg ${isMe ? 'sent' : 'received'} ${m.type === 'sticker' ? 'sticker' : ''}`;
 
-    // 1. ¿Es una respuesta?
-    let replyHTML = m.reply ? `<div class="reply-preview"><b>${m.reply.sender}</b>: ${m.reply.text}</div>` : '';
-
-    // 2. ¿Qué contenido tiene?
+    // Lógica para mostrar Contenido (Texto, Imagen o Audio)
     let contentHTML = "";
-    if(m.type === 'image' || m.img) contentHTML = `<img src="${m.img}" class="chat-img">`;
-    else if(m.type === 'audio') contentHTML = `<audio controls src="${m.audio}"></audio>`;
-    else contentHTML = m.text;
+    if(m.type === 'image' || m.img) {
+        contentHTML = `<img src="${m.img}" class="chat-img" onclick="openLightbox('${m.img}')">`;
+    } else if(m.type === 'audio') {
+        contentHTML = `<audio controls src="${m.audio}"></audio>`;
+    } else {
+        contentHTML = m.text || "";
+    }
 
-    // 3. Montar mensaje
     const time = new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-    div.innerHTML = `${replyHTML}${contentHTML}<div class="msg-info">${time} ${isMe ? (m.seen ? '✓✓' : '✓') : ''}</div>`;
+    div.innerHTML = `${contentHTML}<div class="msg-info">${time} ${isMe ? (m.seen ? '✓✓' : '✓') : ''}</div>`;
     
-    // Al hacer click, permitir responder
-    div.onclick = () => setReply(m.text || "Foto", m.sender);
-
     box.appendChild(div);
     box.scrollTop = box.scrollHeight;
 
-    // Marcar como visto si yo no lo envié
     if(!isMe) db.ref('messages/' + sn.key).update({ seen: true });
 });
+
+// --- 4. Añade esta función de apoyo al final de tu JS ---
+function getFriendlyDate(timestamp) {
+    const messageDate = new Date(timestamp);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+
+    const isSameDate = (d1, d2) => 
+        d1.getDate() === d2.getDate() && 
+        d1.getMonth() === d2.getMonth() && 
+        d1.getFullYear() === d2.getFullYear();
+
+    if (isSameDate(messageDate, today)) return "Hoy";
+    if (isSameDate(messageDate, yesterday)) return "Ayer";
+
+    const options = { weekday: 'long', day: 'numeric', month: 'long' };
+    if (messageDate.getFullYear() === today.getFullYear()) {
+        return messageDate.toLocaleDateString('es-ES', options);
+    }
+    return messageDate.toLocaleDateString('es-ES', { ...options, year: 'numeric' });
+}
 
 // --- NOTAS DE VOZ ---
 function startVoice() {

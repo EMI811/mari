@@ -251,29 +251,27 @@ db.ref('messages').on('child_added', (sn) => {
     const box = document.getElementById('chat-container');
     if(!box) return;
 
-    // --- 2. Lógica de Separador de Fechas ---
+    // --- Lógica de Separador de Fechas (la que pusimos antes) ---
     const dateString = getFriendlyDate(m.timestamp);
     if (dateString !== lastDisplayedDate) {
         const dateSeparator = document.createElement('div');
         dateSeparator.className = 'date-separator';
         dateSeparator.innerText = dateString;
         box.appendChild(dateSeparator);
-        // Dentro del listener de mensajes (db.ref('messages').on...)
-        // Justo después de: box.appendChild(div);
-        box.scrollTop = box.scrollHeight;
         lastDisplayedDate = dateString;
     }
 
-    // --- 3. Crear la burbuja del mensaje (tu código existente mejorado) ---
     const isMe = m.sender === currentUser;
     const div = document.createElement('div');
-    // Agregamos clases según el tipo para que no salga "undefined"
     div.className = `msg ${isMe ? 'sent' : 'received'} ${m.type === 'sticker' ? 'sticker' : ''}`;
+    div.style.position = "relative"; // IMPORTANTE para que la reacción no flote fuera
 
-    // Lógica para mostrar Contenido (Texto, Imagen o Audio)
+    // --- AQUÍ ACTIVAMOS EL LONG PRESS (Paso 4.1) ---
+    setupLongPress(div, sn.key); 
+
     let contentHTML = "";
     if(m.type === 'image' || m.img) {
-        contentHTML = `<img src="${m.img}" class="chat-img" onclick="openLightbox('${m.img}')">`;
+        contentHTML = `<img src="${m.img}" class="chat-img">`;
     } else if(m.type === 'audio') {
         contentHTML = `<audio controls src="${m.audio}"></audio>`;
     } else {
@@ -281,7 +279,11 @@ db.ref('messages').on('child_added', (sn) => {
     }
 
     const time = new Date(m.timestamp).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-    div.innerHTML = `${contentHTML}<div class="msg-info">${time} ${isMe ? (m.seen ? '✓✓' : '✓') : ''}</div>`;
+    
+    // --- AQUÍ DIBUJAMOS LA REACCIÓN SI EXISTE (Paso 4.2) ---
+    let reactionHTML = m.reaction ? `<div class="reaction-badge">${m.reaction}</div>` : '';
+
+    div.innerHTML = `${contentHTML}${reactionHTML}<div class="msg-info">${time} ${isMe ? (m.seen ? '✓✓' : '✓') : ''}</div>`;
     
     box.appendChild(div);
     box.scrollTop = box.scrollHeight;
@@ -652,20 +654,20 @@ function gameOver() {
 
 // UTILIDADES VISUALES
 function showBanner(title, msg) {
-    const b = document.getElementById('ios-notification');
-    if(!b) return;
-    
-    document.getElementById('notif-title').innerText = title;
-    document.getElementById('notif-msg').innerText = msg;
-    
-    // Forzar reflow para reiniciar animación si ya estaba activo
-    b.classList.remove('active');
-    void b.offsetWidth; 
-    b.classList.add('active');
-    
-    setTimeout(() => {
-        b.classList.remove('active');
-    }, 4000);
+    const b = document.getElementById('ios-notification');
+    if(!b) return;
+    
+    // Cambiamos el texto
+    document.getElementById('notif-title').innerText = title;
+    document.getElementById('notif-msg').innerText = msg;
+    
+    // La activamos
+    b.classList.add('active');
+    
+    // SE QUITA SOLA: Después de 3.5 segundos se esconde
+    setTimeout(() => {
+        b.classList.remove('active');
+    }, 3500);
 }
 // --- SISTEMA DE PRESENCIA Y VISTO ---
 function updatePresence(status) {
@@ -857,19 +859,25 @@ function setupLongPress(element, key) {
 }
 
 function showReactionMenu(e, key) {
-    if (navigator.vibrate) navigator.vibrate(40); // Vibración háptica de iOS
+    if (navigator.vibrate) navigator.vibrate(40);
     targetMsgKey = key;
     const menu = document.getElementById('reaction-menu');
     
-    // Posicionar el menú cerca del toque
-    let touch = e.touches ? e.touches[0] : e;
-    menu.style.left = "50px"; 
-    menu.style.top = (touch.clientY - 100) + "px";
+    // Obtenemos la posición del mensaje (el elemento que lanzò el evento)
+    const rect = e.currentTarget.getBoundingClientRect();
     
     menu.classList.remove('hidden');
-    setTimeout(() => menu.classList.add('active'), 10);
+    
+    // Lo posicionamos justo encima del mensaje
+    menu.style.left = "50%";
+    menu.style.transform = "translateX(-50%) scale(0)"; // Centrado horizontal
+    menu.style.top = (rect.top - 60) + "px"; // 60px arriba del mensaje
+    
+    setTimeout(() => {
+        menu.classList.add('active');
+        menu.style.transform = "translateX(-50%) scale(1)";
+    }, 10);
 }
-
 function sendReaction(emoji) {
     if (targetMsgKey) {
         db.ref('messages/' + targetMsgKey + '/reaction').set(emoji);
@@ -886,3 +894,120 @@ document.addEventListener('click', (e) => {
         setTimeout(() => menu.classList.add('hidden'), 200);
     }
 });
+// --- SISTEMA DE BATERÍA COMPARTIDA ---
+async function syncBattery() {
+    if (!navigator.getBattery) return;
+    const battery = await navigator.getBattery();
+    
+    const updateAndSend = () => {
+        const level = Math.round(battery.level * 100) + "%";
+        document.getElementById('my-battery-pct').innerText = level;
+        // Enviar a Firebase
+        db.ref('status/' + currentUser + '/battery').set(level);
+    };
+
+    updateAndSend();
+    battery.addEventListener('levelchange', updateAndSend);
+}
+
+// Escuchar la batería de la otra persona
+db.ref('status').on('value', snap => {
+    const data = snap.val();
+    for (let user in data) {
+        if (user !== currentUser && data[user].battery) {
+            document.getElementById('other-user-battery-name').innerText = user;
+            document.getElementById('other-battery-pct').innerText = data[user].battery;
+        }
+    }
+});
+
+// --- MODO OSCURO AUTOMÁTICO (Basado en la hora 19:00 a 07:00) ---
+function autoDarkMode() {
+    const hour = new Date().getHours();
+    if (hour >= 19 || hour <= 7) {
+        document.body.classList.add('dark-mode');
+    } else {
+        document.body.classList.remove('dark-mode');
+    }
+}
+
+// --- ARREGLO FINAL PARA ESCRIBIENDO ---
+// Llama a esta función cada vez que el "typing-indicator" cambie de hidden a visible
+function forceScroll() {
+    const box = document.getElementById('chat-container');
+    if(box) box.scrollTop = box.scrollHeight;
+}
+
+// Ejecutar al arrancar
+syncBattery();
+autoDarkMode();
+// --- 1. IDENTIDAD PERSISTENTE ---
+function checkIdentity() {
+    let savedName = localStorage.getItem('my_chat_name');
+    if (!savedName) {
+        savedName = prompt("¿Cómo te llamas? (Ej: Amor, Invitado, etc.)") || "Invitado";
+        localStorage.setItem('my_chat_name', savedName);
+    }
+    currentUser = savedName; // Usamos el nombre guardado
+    // Registrarme en la lista de usuarios de Firebase
+    db.ref('users/' + currentUser).set({
+        lastSeen: Date.now(),
+        online: true
+    });
+}
+
+// --- 2. CARGAR LISTA DE CHATS ---
+function loadChatsList() {
+    db.ref('users').on('value', snap => {
+        const list = document.getElementById('chats-list-container');
+        list.innerHTML = "";
+        const users = snap.val();
+
+        for (let name in users) {
+            if (name === currentUser) continue; // No chatear conmigo mismo
+
+            const item = document.createElement('div');
+            item.className = 'chat-item';
+            item.onclick = () => openSpecificChat(name);
+            
+            item.innerHTML = `
+            ${unreadDot}
+                <div class="chat-item-avatar" style="background:${stringToColor(name)}">${name.charAt(0)}</div>
+                <div class="chat-item-content">
+                    <div class="chat-item-top">
+                        <span class="chat-item-name">${name}</span>
+                        <span class="chat-item-time">Ahora</span>
+                    </div>
+                    <span class="chat-item-msg">Toca para chatear con ${name}</span>
+                </div>
+            `;
+            list.appendChild(item);
+        }
+    });
+}
+
+function openSpecificChat(name) {
+    document.getElementById('chat-header-name').innerText = name;
+    showView('view-messages'); // Cambia a la vista del chat
+}
+
+function goToChatsList() {
+    showView('view-chats-list');
+}
+
+// Utilidad para colores de avatar
+function stringToColor(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    return `hsl(${hash % 360}, 60%, 70%)`;
+}
+
+// Llamar al inicio
+checkIdentity();
+loadChatsList();
+function showView(viewId) {
+    // Oculta todas las vistas
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    // Muestra solo la que quieres
+    document.getElementById(viewId).classList.add('active');
+}

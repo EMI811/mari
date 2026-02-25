@@ -57,6 +57,18 @@
             <h1 class="date-display" id="date-display">Lunes, 14 de Febrero</h1>
             <h2 class="welcome-text" id="welcome-text">Hola, Amor</h2>
         </div>
+<div class="widget-container glass-panel">
+    <div class="widget-battery">
+        <div class="battery-info">
+            <span class="battery-name">Mi iPhone</span>
+            <span id="my-battery-pct">--%</span>
+        </div>
+        <div class="battery-info">
+            <span class="battery-name" id="other-user-battery-name">El suyo</span>
+            <span id="other-battery-pct">--%</span>
+        </div>
+    </div>
+</div>
 
         <div class="widget-container glass-panel">
             <div class="widget-icon">⏳</div>
@@ -86,19 +98,35 @@
                 <div class="app-icon gray">⚙️</div><span class="app-name">Ajustes</span>
             </div>
         </div>
-    </main>
+    </main><section id="view-chats-list" class="view active">
+    <div class="navbar">
+        <button class="btn-nav">Editar</button>
+        <span class="nav-title" style="opacity:1">Mensajes</span>
+        <button class="btn-nav"><i class="fas fa-edit"></i></button>
+    </div>
+    
+    <div class="search-bar-container" style="padding: 10px;">
+        <input type="text" class="search-bar" placeholder="Buscar" style="width:100%; padding:8px; border-radius:10px; border:none; background:#e5e5ea;">
+    </div>
+
+    <div id="chats-list-container" class="chats-list">
+        </div>
+</section>
 
 <section id="view-messages" class="view">
-    <div id="typing-indicator" class="typing-indicator hidden">
-    <div class="dot"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
-</div>
-    <div class="chat-status-bar">
+    <div class="chat-status-bar" onclick="openChatSettings()">
         <span id="other-user-status">Desconectado</span>
     </div>
     
-    <div id="chat-container" class="chat-scroll-area"></div>
+    <div id="chat-container" class="chat-scroll-area">
+        <div id="typing-indicator" class="typing-indicator hidden">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </div>
+
+    </section>
     
     <div id="chat-extra-menu" class="chat-extra-menu hidden">
         <button onclick="document.getElementById('chat-file').click()">🖼️ Foto/Archivo</button>

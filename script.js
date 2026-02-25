@@ -258,6 +258,9 @@ db.ref('messages').on('child_added', (sn) => {
         dateSeparator.className = 'date-separator';
         dateSeparator.innerText = dateString;
         box.appendChild(dateSeparator);
+        // Dentro del listener de mensajes (db.ref('messages').on...)
+        // Justo después de: box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
         lastDisplayedDate = dateString;
     }
 
@@ -792,5 +795,94 @@ window.addEventListener('load', () => {
         } else if (Notification.permission === "denied") {
             statusEl.innerText = "Estado: Bloqueado ❌";
         }
+    }
+});
+// --- LÓGICA DE ESCRIBIENDO ---
+
+const chatInput = document.getElementById('chat-input');
+let typingTimeout;
+
+chatInput.addEventListener('input', () => {
+    // 1. Decirle a Firebase que estoy escribiendo
+    db.ref('typing/' + currentUser).set(true);
+
+    // 2. Si dejo de escribir por 2 segundos, quitar el estado
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+        db.ref('typing/' + currentUser).set(false);
+    }, 2000);
+});
+
+// 3. Escuchar si la OTRA persona está escribiendo
+db.ref('typing').on('value', (snapshot) => {
+    const data = snapshot.val();
+    const indicator = document.getElementById('typing-indicator');
+    
+    if (!data) return;
+
+    // Buscamos si alguien que NO soy yo está escribiendo
+    let isSomeoneElseTyping = false;
+    for (let user in data) {
+        if (user !== currentUser && data[user] === true) {
+            isSomeoneElseTyping = true;
+            break;
+        }
+    }
+
+    if (isSomeoneElseTyping) {
+        indicator.classList.remove('hidden');
+        // Auto-scroll al fondo para ver los puntos
+        const box = document.getElementById('chat-container');
+        box.scrollTop = box.scrollHeight;
+    } else {
+        indicator.classList.add('hidden');
+    }
+});
+let targetMsgKey = null; // Para saber a qué mensaje le ponemos el emoji
+
+// Esta función se activa cuando creas el mensaje en el chat
+function setupLongPress(element, key) {
+    let timer;
+    const start = (e) => {
+        timer = setTimeout(() => {
+            showReactionMenu(e, key);
+        }, 600); // 600ms para detectar pulsación larga
+    };
+    const end = () => clearTimeout(timer);
+
+    element.addEventListener('touchstart', start);
+    element.addEventListener('touchend', end);
+    element.addEventListener('mousedown', start);
+    element.addEventListener('mouseup', end);
+}
+
+function showReactionMenu(e, key) {
+    if (navigator.vibrate) navigator.vibrate(40); // Vibración háptica de iOS
+    targetMsgKey = key;
+    const menu = document.getElementById('reaction-menu');
+    
+    // Posicionar el menú cerca del toque
+    let touch = e.touches ? e.touches[0] : e;
+    menu.style.left = "50px"; 
+    menu.style.top = (touch.clientY - 100) + "px";
+    
+    menu.classList.remove('hidden');
+    setTimeout(() => menu.classList.add('active'), 10);
+}
+
+function sendReaction(emoji) {
+    if (targetMsgKey) {
+        db.ref('messages/' + targetMsgKey + '/reaction').set(emoji);
+        document.getElementById('reaction-menu').classList.remove('active');
+        setTimeout(() => document.getElementById('reaction-menu').classList.add('hidden'), 200);
+    }
+}
+
+// CERRAR MENÚ AL TOCAR FUERA
+document.addEventListener('click', (e) => {
+    if(!e.target.closest('.reaction-menu')) {
+        const menu = document.getElementById('reaction-menu');
+        menu.classList.remove('active');
+        setTimeout(() => menu.classList.add('hidden'), 200);
     }
 });
